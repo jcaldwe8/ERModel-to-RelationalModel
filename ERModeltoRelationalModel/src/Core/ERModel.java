@@ -5,6 +5,8 @@
  */
 package Core;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author caldw
@@ -12,10 +14,12 @@ package Core;
  */
 public class ERModel {
     
+    ArrayList<Entity> Entities;
+    ArrayList<Relationship> Relationships;
     
-    
-    public void ERModel() {
-        
+    public ERModel() {
+        Entities = new ArrayList<>();
+        Relationships = new ArrayList<>();
     }//constructor
     
 }
