@@ -48,7 +48,8 @@ public class Entity {
                 a.addCompAttr(cname, ctype);
                 return;
             } else if (a.getType() == AttrType.COMPOSITE) {
-                Attribute b = findAttr(parAttr, a.getComp());
+                Attribute b;
+                b = a.getSubAttribute(parAttr);
                 if (b.getName().equals(parAttr)) { 
                     b.addCompAttr(cname, ctype);
                     return;
@@ -56,18 +57,6 @@ public class Entity {
             }//if
         }//for
     }//addAttrToComp
-    
-    public Attribute findAttr(String name, ArrayList<Attribute> attrs) {
-        Attribute attr = new Attribute(" ", AttrType.SIMPLE, -1);
-        for (Attribute a : attrs) {
-            if (a.getName().equals(name) && a.getType() == AttrType.COMPOSITE) {
-                return a;
-            } else if (a.getType() == AttrType.COMPOSITE) {
-                attr = findAttr(name, a.getComp());
-            }//if
-        }//for
-        return attr;
-    }
     
     public String getName() {
         return name;
@@ -81,8 +70,27 @@ public class Entity {
             ret = ret + "\nIdentifying Relationship: " + idRel;
         }//if
         ret = ret + "\n- - - - - -";
-        ret = ret + attr.toString();
+        for (Attribute a : attr)
+            ret = ret + "\n" + a.toString();
         return ret;
     }//toString
+    
+    public void display() {
+        System.err.println(this.toString());
+    }
+    
+    public static void main(String args[]) {
+        Entity car = new Entity("Car", EntityType.REG);
+        car.addAttr("Licence Plate#", AttrType.SIMPLE);
+        car.addAttr("Registration", AttrType.COMPOSITE);
+        car.addAttrToComp("Registration", "State", AttrType.SIMPLE);
+        car.addAttrToComp("Registration", "Number", AttrType.SIMPLE);
+        car.display();
+        
+        Entity bankBranch = new Entity("Bank Branch", EntityType.WEAK, "Branch");
+        bankBranch.addAttr("Branch No.", AttrType.SIMPLE);
+        bankBranch.addAttr("Location", AttrType.SIMPLE);
+        bankBranch.display();
+    }
     
 }
