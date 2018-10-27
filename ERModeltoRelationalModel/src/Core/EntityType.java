@@ -9,8 +9,6 @@ package Core;
  *
  * @author caldw
  */
-public enum EntityType {
-    
-    REG, WEAK;
-    
+public enum EntityType {    
+    REG, WEAK;   
 }

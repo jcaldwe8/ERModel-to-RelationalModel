@@ -69,4 +69,16 @@ public class Entity {
         return attr;
     }
     
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public String toString() {
+        String ret;
+        ret = name + "\n";
+        ret = ret + attr.toString();
+        return ret;
+    }//toString
+    
 }

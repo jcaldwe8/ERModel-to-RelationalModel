@@ -10,8 +10,6 @@ package Core;
  * @author caldw
  * AttrType: an Attribute can be simple, composite, multivalued, or derived
  */
-public enum AttrType {
-    
-    SIMPLE, COMPOSITE, MULTIVALUED, DERIVED;
-    
+public enum AttrType {    
+    SIMPLE, COMPOSITE, MULTIVALUED, DERIVED;    
 }
