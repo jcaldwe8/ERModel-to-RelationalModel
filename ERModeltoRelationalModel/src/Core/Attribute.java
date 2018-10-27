@@ -16,7 +16,7 @@ public class Attribute {
     
     private String name;
     private AttrType type;
-    private int level;
+    private final int level;
     private String indent;
     private ArrayList<Attribute> comp; //simple attribute components that make up a composite attribute
     
@@ -25,8 +25,9 @@ public class Attribute {
         this.type = type; //type of the attribute
         comp = new ArrayList<>(); //initialize a composite's sub-attributes if needed
         this.level = level;
-        for (int i = 0; i < level+1; i++)
-            indent += " ";
+        indent = "";
+        for (int i = 0; i < level; i++)
+            indent = indent + "  ";
     }//constructor
     
     //alterType: change the type of the attribute if needed
@@ -50,11 +51,32 @@ public class Attribute {
     public String toString() {
         String ret = name + " (" + type.toString() + ")";
         for (Attribute a : comp) {
-            ret = ret + "\n" + indent + " ->" + a.toString();
+            ret = ret + "\n" + indent + " -> " + a.toString();
         }
         return ret;
     }//toString
 
+    public void display() {
+        System.err.println(this.toString());
+    }
+    
+    public Attribute getSubAttribute(String name) {
+        if (this.name.equals(name))
+            return this;
+        for (Attribute a : comp) {
+            if (a.getName().equals(name)) {
+                return a;
+            } else {
+                if (a.getType() == AttrType.COMPOSITE) {
+                    Attribute b = a.getSubAttribute(name);
+                    if (b != null)
+                        return b;
+                }
+            }//if
+        }//for
+        return null;
+    }//getSubAttribute
+    
     public String getName() {
         return name;
     }
@@ -65,6 +87,61 @@ public class Attribute {
 
     public ArrayList<Attribute> getComp() {
         return comp;
+    }
+    
+    public static void main(String args[]) {
+        Attribute location = new Attribute("Location", AttrType.MULTIVALUED, 0);
+        location.display();
+        Attribute numOfItems = new Attribute("No. of Items", AttrType.DERIVED, 0);
+        numOfItems.display();
+        
+        Attribute addr = new Attribute("Address", AttrType.COMPOSITE, 0);
+        addr.addCompAttr("Street", AttrType.SIMPLE);
+        addr.addCompAttr("Apt. No.", AttrType.SIMPLE);
+        addr.addCompAttr("State", AttrType.SIMPLE);
+        addr.addCompAttr("Zip Code", AttrType.SIMPLE);
+        addr.display();
+        
+        Attribute food = new Attribute("Food", AttrType.COMPOSITE, 0);
+        
+        food.addCompAttr("Fats", AttrType.COMPOSITE);
+        food.getSubAttribute("Fats").addCompAttr("Candy", AttrType.COMPOSITE);
+        food.getSubAttribute("Candy").addCompAttr("Chocolate", AttrType.SIMPLE);
+        food.getSubAttribute("Candy").addCompAttr("Sugar", AttrType.SIMPLE);
+        food.getSubAttribute("Fats").addCompAttr("Fried", AttrType.SIMPLE);
+        
+        food.addCompAttr("Grains", AttrType.COMPOSITE);
+        food.getSubAttribute("Grains").addCompAttr("Bread", AttrType.SIMPLE);
+        food.getSubAttribute("Grains").addCompAttr("Pasta", AttrType.SIMPLE);
+        food.getSubAttribute("Grains").addCompAttr("Starch", AttrType.SIMPLE);
+        
+        food.addCompAttr("Dairy", AttrType.COMPOSITE);
+        food.getSubAttribute("Dairy").addCompAttr("Milk", AttrType.SIMPLE);
+        food.getSubAttribute("Dairy").addCompAttr("Yogurt", AttrType.SIMPLE);
+        food.getSubAttribute("Dairy").addCompAttr("Cheese", AttrType.SIMPLE);
+        
+        food.addCompAttr("Meat", AttrType.COMPOSITE);
+        food.getSubAttribute("Meat").addCompAttr("Beef", AttrType.SIMPLE);
+        food.getSubAttribute("Meat").addCompAttr("Chicken", AttrType.SIMPLE);
+        food.getSubAttribute("Meat").addCompAttr("Pork", AttrType.SIMPLE);
+        food.getSubAttribute("Meat").addCompAttr("Beans", AttrType.SIMPLE);
+        food.getSubAttribute("Meat").addCompAttr("Legumes", AttrType.SIMPLE);
+        
+        food.addCompAttr("Vegetables", AttrType.COMPOSITE);
+        food.getSubAttribute("Vegetables").addCompAttr("Root", AttrType.SIMPLE);
+        food.getSubAttribute("Vegetables").addCompAttr("Leafy Green", AttrType.SIMPLE);
+        food.getSubAttribute("Vegetables").addCompAttr("Cruciferous", AttrType.SIMPLE);
+        food.getSubAttribute("Vegetables").addCompAttr("Edible Plant Stem", AttrType.SIMPLE);
+        food.getSubAttribute("Vegetables").addCompAttr("Marrow", AttrType.SIMPLE);
+        food.getSubAttribute("Vegetables").addCompAttr("Allium", AttrType.SIMPLE);
+        
+        food.addCompAttr("Fruits", AttrType.COMPOSITE);
+        food.getSubAttribute("Fruits").addCompAttr("Stone", AttrType.SIMPLE);
+        food.getSubAttribute("Fruits").addCompAttr("Berry", AttrType.SIMPLE);
+        food.getSubAttribute("Fruits").addCompAttr("Hard", AttrType.SIMPLE);
+        food.getSubAttribute("Fruits").addCompAttr("Citrus", AttrType.SIMPLE);
+        
+        food.display();
     }
     
 }
