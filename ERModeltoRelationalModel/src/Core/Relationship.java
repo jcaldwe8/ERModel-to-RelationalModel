@@ -5,6 +5,8 @@
  */
 package Core;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author caldw
@@ -18,9 +20,18 @@ public class Relationship {
     Entity leftEnt, rightEnt;
     Participation leftPar, rightPar;
     Cardinality leftCar, rightCar;
+    ArrayList<Attribute> attr;
     
     public Relationship(String name) {
         this.name = name;
+        attr = new ArrayList<>();
+    }//constructor
+    
+    public Relationship(String name, Entity LE, Entity RE) {
+        this.name = name;
+        leftEnt = LE;
+        rightEnt = RE;
+        attr = new ArrayList<>();
     }//constructor
     
     public Relationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
@@ -31,8 +42,13 @@ public class Relationship {
         rightPar = RP;
         leftCar = LC;
         rightCar = RC;
+        attr = new ArrayList<>();
     }//constructor
 
+    public void addAttribute(Attribute a) {
+        attr.add(a);
+    }//addAttribute
+    
     @Override
     public String toString() {
         String ret;
@@ -95,7 +111,7 @@ public class Relationship {
         return leftCar;
     }
 
-    public void setLeftCar(Cardinality leftCar) {
+    public void LeftCar(Cardinality leftCar) {
         this.leftCar = leftCar;
     }
 

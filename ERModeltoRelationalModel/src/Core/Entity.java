@@ -17,7 +17,7 @@ public class Entity {
     
     private String name;
     private EntityType type;
-    private Relationship idRel; //identifying relationship
+    private String idRel; //name of identifying relationship
     private ArrayList<Attribute> attr;
     
     public Entity(String name, EntityType type) {
@@ -26,7 +26,7 @@ public class Entity {
         attr = new ArrayList<>();
     }//constructor(for strong)
     
-    public Entity(String name, EntityType type, Relationship idRel) {
+    public Entity(String name, EntityType type, String idRel) {
         this.name = name;
         this.type = type;
         attr = new ArrayList<>();
@@ -76,7 +76,11 @@ public class Entity {
     @Override
     public String toString() {
         String ret;
-        ret = name + "\n";
+        ret = name + "(" + type + ")";
+        if (type == EntityType.WEAK) {
+            ret = ret + "\nIdentifying Relationship: " + idRel;
+        }//if
+        ret = ret + "\n- - - - - -";
         ret = ret + attr.toString();
         return ret;
     }//toString
