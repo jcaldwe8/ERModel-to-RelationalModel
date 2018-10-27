@@ -8,14 +8,7 @@ package Core;
 /**
  *
  * @author caldw
- * ERModel: an ERModel contains Entities with attributes and Relationships that relate those entities
  */
-public class ERModel {
-    
-    
-    
-    public void ERModel() {
-        
-    }//constructor
+public class Relationship {
     
 }

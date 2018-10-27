@@ -8,14 +8,10 @@ package Core;
 /**
  *
  * @author caldw
- * ERModel: an ERModel contains Entities with attributes and Relationships that relate those entities
+ * AttrType: an Attribute can be simple, composite, or multivalued
  */
-public class ERModel {
+public enum AttrType {
     
-    
-    
-    public void ERModel() {
-        
-    }//constructor
+    SIMPLE, COMPOSITE, MULTIVALUED;
     
 }

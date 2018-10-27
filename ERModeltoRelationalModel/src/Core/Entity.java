@@ -8,14 +8,9 @@ package Core;
 /**
  *
  * @author caldw
- * ERModel: an ERModel contains Entities with attributes and Relationships that relate those entities
+ * Entity: an Entity has a name and contains attributes
+ *         it can be regular or weak (with an identifying relationship)
  */
-public class ERModel {
-    
-    
-    
-    public void ERModel() {
-        
-    }//constructor
+public class Entity {
     
 }
