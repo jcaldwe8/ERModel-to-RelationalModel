@@ -28,6 +28,7 @@ public class Entity {
         this.type = type;
         attr = new ArrayList<>();
         keyAttr = new HashSet<>();
+        idRel = "";
     }//constructor(for strong)
     
     public Entity(String name, EntityType type, String idRel) {
@@ -86,6 +87,10 @@ public class Entity {
         return name;
     }
     
+    public EntityType getType() {
+        return type;
+    }
+    
     @Override
     public String toString() {
         String ret;
@@ -93,15 +98,17 @@ public class Entity {
         if (type == EntityType.WEAK) {
             ret = ret + "\nIdentifying Relationship: " + idRel;
         }//if
-        ret = ret + "\n- - - - - -";
+        ret += "\n- - - - - -\n";
         String key = "";
         for (Attribute a : attr) {
             if (keyAttr.contains(a.getName())) { 
                 key = "*"; 
-            }
-            ret = ret + "\n" + key + a.toString();
+            }//if
+            ret += "\n" + key + a.toString();
             key = "";
-        }
+        }//for
+        if (attr.isEmpty())
+            ret += "(no attributes)\n\n";
         return ret;
     }//toString
     

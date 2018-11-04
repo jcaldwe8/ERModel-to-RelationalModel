@@ -14,11 +14,13 @@ import java.util.ArrayList;
  */
 public class ERModel {
     
+    String name;
     ArrayList<Entity> regEntities;
     ArrayList<Entity> weakEntities;
     ArrayList<Relationship> relationships;
     
-    public ERModel() {
+    public ERModel(String name) {
+        this.name = name;
         regEntities = new ArrayList<>();
         weakEntities = new ArrayList<>();
         relationships = new ArrayList<>();
@@ -34,21 +36,21 @@ public class ERModel {
         weakEntities.add(e);
     }//addWeakEntity
     
-    public void addRelationship(String name, String LE, String RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+    public void addRelationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
         if (checkEnt(LE) || checkEnt(RE))
             return;
         Relationship r = new Relationship(name, LE, RE, LP, RP, LC, RC);
         relationships.add(r);
     }//addRelationship
     
-    public boolean checkEnt(String eName) {
+    public boolean checkEnt(Entity eName) {
         for (Entity e : regEntities)
             if (e.getName().equals(eName))
                 return true;
         for (Entity e : weakEntities)
             if (e.getName().equals(eName))
                 return true;
-        System.err.println("No Entity with name " + eName + " has been added yet!!\nAdd entity before including in a relationship!!");
+        System.err.println("No Entity with name " + eName + " has been added yet!!\nAdd entity before including it in a relationship!!");
         return false;
     }//checkEnt
     
@@ -63,13 +65,34 @@ public class ERModel {
     }//addAttrToRelationship
     
     public Relationship getRelationship(String name) {
-        for (Relationship r : relationships)
-            if (r.getName().equals(name))
-                return r;
-        System.out.println("Couldn't find Relationship with name " + name);
+        try {
+            for (Relationship r : relationships)
+                if (r.getName().equals(name))
+                    return r;
+            System.err.println("Couldn't find Relationship with name " + name + "\nReturning NULL");
+            throw new ElementNotFound("The Relationship with name " + name + " was not found!!");
+        } catch (ElementNotFound e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
+    public Entity getEntity(String name) {
+        try {
+            for (Entity e : regEntities)
+                if (e.getName().equals(name))
+                    return e;
+           for (Entity e : weakEntities)
+                if (e.getName().equals(name))
+                    return e;
+            System.err.println("Couldn't find Entity with name " + name);
+            throw new ElementNotFound("The Entity with name " + name + " was not found!!");
+        } catch (ElementNotFound e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     public ArrayList<Entity> getRegEntities() {
         return regEntities;
     }
@@ -82,18 +105,44 @@ public class ERModel {
         return relationships;
     }
     
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public String toString() {
+        String ret = this.getName() + ":\n";
+        if (!regEntities.isEmpty()) {
+            ret += "Regular Entities:\n* * * * * * * *\n";
+            for (Entity e : regEntities)
+                ret += e.toString();
+        }//if
+        if (!weakEntities.isEmpty()) {
+            ret += "Weak Entities:\n* * * * * * * *\n";
+            for (Entity e : weakEntities)
+                ret += e.toString();
+        }//if
+        if (!relationships.isEmpty()) {
+            ret += "Relationships:\n* * * * * * * *\n";
+            for (Relationship r : relationships)
+                ret += r.toString();
+        }//if
+        return ret;
+    }
+    
+    public void display() {
+        System.err.println("\n" + this.toString());
+    }
+    
     public static void main(String args[]) {
-        Relationship worksFor = new Relationship("Works_For");
+        ERModel company = new ERModel("Company");
         Participation pWorksForEmp = Participation.FULL;
         Participation pWorksForDep = Participation.PARTIAL;
         Cardinality cWorksForEmp = new Cardinality(1,3);
         Cardinality cWorksForDep = new Cardinality(Cardinality.CardVal.N);
-        worksFor.setLeftEnt("Employee");
-        worksFor.setRightEnt("Department");
-        worksFor.setLeftPar(pWorksForEmp);
-        worksFor.setRightPar(pWorksForDep);
-        worksFor.setLeftCar(cWorksForEmp);
-        worksFor.setRightCar(cWorksForDep);
+        company.addRegEntity("Employee");
+        company.addRegEntity("Department");
+        company.addRelationship("Works For", company.getEntity("Employee"), company.getEntity("Department"), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
+        company.display();
     }
-    
 }
