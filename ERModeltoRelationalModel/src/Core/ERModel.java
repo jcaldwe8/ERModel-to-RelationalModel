@@ -45,10 +45,10 @@ public class ERModel {
     
     public boolean checkEnt(Entity eName) {
         for (Entity e : regEntities)
-            if (e.getName().equals(eName))
+            if (e.equals(eName))
                 return true;
         for (Entity e : weakEntities)
-            if (e.getName().equals(eName))
+            if (e.equals(eName))
                 return true;
         System.err.println("No Entity with name " + eName + " has been added yet!!\nAdd entity before including it in a relationship!!");
         return false;
@@ -69,7 +69,7 @@ public class ERModel {
             for (Relationship r : relationships)
                 if (r.getName().equals(name))
                     return r;
-            System.err.println("Couldn't find Relationship with name " + name + "\nReturning NULL");
+            System.err.println("Couldn't find Relationship with name " + name + "\nReturning NULL element");
             throw new ElementNotFound("The Relationship with name " + name + " was not found!!");
         } catch (ElementNotFound e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class ERModel {
            for (Entity e : weakEntities)
                 if (e.getName().equals(name))
                     return e;
-            System.err.println("Couldn't find Entity with name " + name);
+            System.err.println("Couldn't find Entity with name " + name + "\nReturning NULL element");
             throw new ElementNotFound("The Entity with name " + name + " was not found!!");
         } catch (ElementNotFound e) {
             e.printStackTrace();
@@ -147,6 +147,6 @@ public class ERModel {
         company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
         company.display();
         company.getEntity("Project");
-        company.getRelationship("");
+        company.getRelationship("Works On");
     }
 }
