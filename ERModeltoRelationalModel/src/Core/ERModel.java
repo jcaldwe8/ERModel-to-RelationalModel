@@ -74,7 +74,7 @@ public class ERModel {
         } catch (ElementNotFound e) {
             e.printStackTrace();
         }
-        return null;
+        return new Relationship("NULL");
     }
 
     public Entity getEntity(String name) {
@@ -90,7 +90,7 @@ public class ERModel {
         } catch (ElementNotFound e) {
             e.printStackTrace();
         }
-        return null;
+        return new Entity("NULL", EntityType.NULL);
     }
     
     public ArrayList<Entity> getRegEntities() {
@@ -136,13 +136,17 @@ public class ERModel {
     
     public static void main(String args[]) {
         ERModel company = new ERModel("Company");
+        String employee = "Employee";
+        String department = "Department";
         Participation pWorksForEmp = Participation.FULL;
         Participation pWorksForDep = Participation.PARTIAL;
         Cardinality cWorksForEmp = new Cardinality(1,3);
         Cardinality cWorksForDep = new Cardinality(Cardinality.CardVal.N);
-        company.addRegEntity("Employee");
-        company.addRegEntity("Department");
-        company.addRelationship("Works For", company.getEntity("Employee"), company.getEntity("Department"), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
+        company.addRegEntity(employee);
+        company.addRegEntity(department);
+        company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
         company.display();
+        company.getEntity("Project");
+        company.getRelationship("");
     }
 }

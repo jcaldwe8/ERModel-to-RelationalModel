@@ -10,5 +10,5 @@ package Core;
  * @author caldw
  */
 public enum Participation {
-    FULL, PARTIAL;
+    FULL, PARTIAL, NULL;
 }

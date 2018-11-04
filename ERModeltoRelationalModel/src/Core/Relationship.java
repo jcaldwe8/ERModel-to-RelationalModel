@@ -26,12 +26,23 @@ public class Relationship {
     public Relationship(String name) {
         this.name = name;
         attr = new ArrayList<>();
+        leftEnt = new Entity("NULL1", EntityType.NULL);
+        rightEnt = new Entity("NULL2", EntityType.NULL);
+        leftPar = Participation.NULL;
+        rightPar = Participation.NULL;
+        leftCar = new Cardinality(CardVal.NULL);
+        rightCar = new Cardinality(CardVal.NULL);
+        attr = new ArrayList<>();
     }//constructor
     
     public Relationship(String name, Entity LE, Entity RE) {
         this.name = name;
         leftEnt = LE;
         rightEnt = RE;
+        leftPar = Participation.NULL;
+        rightPar = Participation.NULL;
+        leftCar = new Cardinality(CardVal.NULL);
+        rightCar = new Cardinality(CardVal.NULL);
         attr = new ArrayList<>();
     }//constructor
     
