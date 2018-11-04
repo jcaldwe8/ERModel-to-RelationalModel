@@ -5,6 +5,7 @@
  */
 package Core;
 
+import Core.Cardinality.CardVal;
 import java.util.ArrayList;
 
 /**
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class Relationship {
     
     String name;
-    Entity leftEnt, rightEnt;
+    String leftEnt, rightEnt;
     Participation leftPar, rightPar;
     Cardinality leftCar, rightCar;
     ArrayList<Attribute> attr;
@@ -27,14 +28,14 @@ public class Relationship {
         attr = new ArrayList<>();
     }//constructor
     
-    public Relationship(String name, Entity LE, Entity RE) {
+    public Relationship(String name, String LE, String RE) {
         this.name = name;
         leftEnt = LE;
         rightEnt = RE;
         attr = new ArrayList<>();
     }//constructor
     
-    public Relationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+    public Relationship(String name, String LE, String RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
         this.name = name;
         leftEnt = LE;
         rightEnt = RE;
@@ -52,16 +53,20 @@ public class Relationship {
     @Override
     public String toString() {
         String ret;
-        ret = "Relationship:" + name + "\n= = = = = =\n";
-        ret = ret + "First Entity: " + leftEnt.getName();
-        ret = ret + "Paricipation: " + leftPar.toString();
-        ret = ret + "Cardinality: " + leftCar.toString();
-        ret = ret + "- - - - - -";
-        ret = ret + "Second Entity: " + rightEnt.getName();
-        ret = ret + "Paricipation: " + rightPar.toString();
-        ret = ret + "Cardinality: " + rightCar.toString();
-        return ret;
+        ret = "Relationship: " + name + "\n= = = = = = =";
+        ret = ret + "\nFirst Entity: " + leftEnt;
+        ret = ret + "\nParicipation: " + leftPar.toString();
+        ret = ret + "\nCardinality: " + leftCar.toString();
+        ret = ret + "\n- - - - - - -";
+        ret = ret + "\nSecond Entity: " + rightEnt;
+        ret = ret + "\nParicipation: " + rightPar.toString();
+        ret = ret + "\nCardinality: " + rightCar.toString();
+        return ret + "\n";
     }//toString
+    
+    public void display() {
+        System.err.println("\n" + this.toString());
+    }//display
     
     ///////////////////////
     // Getters + Setters //
@@ -75,19 +80,19 @@ public class Relationship {
         this.name = name;
     }
 
-    public Entity getLeftEnt() {
+    public String getLeftEnt() {
         return leftEnt;
     }
 
-    public void setLeftEnt(Entity leftEnt) {
+    public void setLeftEnt(String leftEnt) {
         this.leftEnt = leftEnt;
     }
 
-    public Entity getRightEnt() {
+    public String getRightEnt() {
         return rightEnt;
     }
 
-    public void setRightEnt(Entity rightEnt) {
+    public void setRightEnt(String rightEnt) {
         this.rightEnt = rightEnt;
     }
 
@@ -111,7 +116,7 @@ public class Relationship {
         return leftCar;
     }
 
-    public void LeftCar(Cardinality leftCar) {
+    public void setLeftCar(Cardinality leftCar) {
         this.leftCar = leftCar;
     }
 
@@ -123,6 +128,19 @@ public class Relationship {
         this.rightCar = rightCar;
     }
     
-    
+    public static void main(String args[]) {
+        Relationship worksFor = new Relationship("Works_For");
+        Participation pWorksForEmp = Participation.FULL;
+        Participation pWorksForDep = Participation.PARTIAL;
+        Cardinality cWorksForEmp = new Cardinality(1,3);
+        Cardinality cWorksForDep = new Cardinality(CardVal.N);
+        worksFor.setLeftEnt("Employee");
+        worksFor.setRightEnt("Department");
+        worksFor.setLeftPar(pWorksForEmp);
+        worksFor.setRightPar(pWorksForDep);
+        worksFor.setLeftCar(cWorksForEmp);
+        worksFor.setRightCar(cWorksForDep);
+        worksFor.display();
+    }
     
 }

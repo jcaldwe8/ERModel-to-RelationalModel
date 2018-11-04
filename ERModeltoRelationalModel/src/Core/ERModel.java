@@ -34,10 +34,23 @@ public class ERModel {
         weakEntities.add(e);
     }//addWeakEntity
     
-    public void addRelationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+    public void addRelationship(String name, String LE, String RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+        if (checkEnt(LE) || checkEnt(RE))
+            return;
         Relationship r = new Relationship(name, LE, RE, LP, RP, LC, RC);
         relationships.add(r);
     }//addRelationship
+    
+    public boolean checkEnt(String eName) {
+        for (Entity e : regEntities)
+            if (e.getName().equals(eName))
+                return true;
+        for (Entity e : weakEntities)
+            if (e.getName().equals(eName))
+                return true;
+        System.err.println("No Entity with name " + eName + " has been added yet!!\nAdd entity before including in a relationship!!");
+        return false;
+    }//checkEnt
     
     //addAttrToRelationship: add an attribute to a relationship
     public void addAttrToRelationship(Attribute a, String relName) {
@@ -45,7 +58,7 @@ public class ERModel {
         if (r != null) {
             r.addAttribute(a);
         } else {
-            System.out.println("Couldn't find Relationship - Attribute not added");
+            System.out.println("Couldn't find Relationship with name " + relName + "\nAttribute not added");
         }
     }//addAttrToRelationship
     
@@ -67,6 +80,20 @@ public class ERModel {
 
     public ArrayList<Relationship> getRelationships() {
         return relationships;
+    }
+    
+    public static void main(String args[]) {
+        Relationship worksFor = new Relationship("Works_For");
+        Participation pWorksForEmp = Participation.FULL;
+        Participation pWorksForDep = Participation.PARTIAL;
+        Cardinality cWorksForEmp = new Cardinality(1,3);
+        Cardinality cWorksForDep = new Cardinality(Cardinality.CardVal.N);
+        worksFor.setLeftEnt("Employee");
+        worksFor.setRightEnt("Department");
+        worksFor.setLeftPar(pWorksForEmp);
+        worksFor.setRightPar(pWorksForDep);
+        worksFor.setLeftCar(cWorksForEmp);
+        worksFor.setRightCar(cWorksForDep);
     }
     
 }

@@ -6,6 +6,8 @@
 package Core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -19,17 +21,20 @@ public class Entity {
     private EntityType type;
     private String idRel; //name of identifying relationship
     private ArrayList<Attribute> attr;
+    private Set<String> keyAttr;
     
     public Entity(String name, EntityType type) {
         this.name = name;
         this.type = type;
         attr = new ArrayList<>();
+        keyAttr = new HashSet<>();
     }//constructor(for strong)
     
     public Entity(String name, EntityType type, String idRel) {
         this.name = name;
         this.type = type;
         attr = new ArrayList<>();
+        keyAttr = new HashSet<>();
         if (type != EntityType.WEAK)
             return;
         this.idRel = idRel;
@@ -57,6 +62,25 @@ public class Entity {
             }//if
         }//for
     }//addAttrToComp
+
+    public void setKeyAttr(String... attrs) {
+        keyAttr.clear();
+        boolean in;
+        for (String a : attrs) {
+            in = false;
+            for (Attribute at : attr) {
+                if (at.getName().equals(a)) {
+                    in = true;
+                    break;
+                }//if
+            }
+            if (in) {
+                keyAttr.add(a);
+            } else {
+                System.err.println("Attribute " + a + " is not currently in the array of attributes!!!\nAdd it before declaring it part of the key for the entity!!!");
+            }//if-else
+        }//for-each
+    }//setKeyAttr
     
     public String getName() {
         return name;
@@ -70,13 +94,19 @@ public class Entity {
             ret = ret + "\nIdentifying Relationship: " + idRel;
         }//if
         ret = ret + "\n- - - - - -";
-        for (Attribute a : attr)
-            ret = ret + "\n" + a.toString();
+        String key = "";
+        for (Attribute a : attr) {
+            if (keyAttr.contains(a.getName())) { 
+                key = "*"; 
+            }
+            ret = ret + "\n" + key + a.toString();
+            key = "";
+        }
         return ret;
     }//toString
     
     public void display() {
-        System.err.println(this.toString());
+        System.err.println("\n" + this.toString());
     }
     
     public static void main(String args[]) {
@@ -85,11 +115,14 @@ public class Entity {
         car.addAttr("Registration", AttrType.COMPOSITE);
         car.addAttrToComp("Registration", "State", AttrType.SIMPLE);
         car.addAttrToComp("Registration", "Number", AttrType.SIMPLE);
+        car.setKeyAttr("Licence Plate#");
         car.display();
         
         Entity bankBranch = new Entity("Bank Branch", EntityType.WEAK, "Branch");
         bankBranch.addAttr("Branch No.", AttrType.SIMPLE);
         bankBranch.addAttr("Location", AttrType.SIMPLE);
+        bankBranch.display();
+        bankBranch.setKeyAttr("Branch No.", "Location");
         bankBranch.display();
     }
     
