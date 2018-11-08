@@ -37,7 +37,7 @@ public class ERModel {
     }//addWeakEntity
     
     public void addRelationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
-        if (checkEnt(LE) || checkEnt(RE))
+        if (!checkEnt(LE) || !checkEnt(RE))
             return;
         Relationship r = new Relationship(name, LE, RE, LP, RP, LC, RC);
         relationships.add(r);
@@ -55,14 +55,43 @@ public class ERModel {
     }//checkEnt
     
     //addAttrToRelationship: add an attribute to a relationship
-    public void addAttrToRelationship(Attribute a, String relName) {
+    public void addAttrToRelationship(EAttribute a, String relName) {
         Relationship r = getRelationship(relName);
-        if (r != null) {
+        if (!r.getName().equals("NULL")) {
             r.addAttribute(a);
         } else {
             System.out.println("Couldn't find Relationship with name " + relName + "\nAttribute not added");
         }
     }//addAttrToRelationship
+    
+    //addAttrToEntity: add an attribute to the Entity called eName
+    // eName: name of entity we add the attribute to
+    // attach: where the attribute is attached (the name of the entity or a composite attribute)
+    // aName: name of added attribute
+    // type: type of added attribute
+    public void addAttrToEntity(String eName, String attach, String aName, String type) {
+        if (type.equalsIgnoreCase("COMPOSITE") || type.equalsIgnoreCase("C")) {
+            getEntity(eName).addAttr(attach, aName, AttrType.COMPOSITE);
+        } else if (type.equalsIgnoreCase("SIMPLE") || type.equalsIgnoreCase("S")) {
+            getEntity(eName).addAttr(attach, aName, AttrType.SIMPLE);
+        } else if (type.equalsIgnoreCase("MULTIVALUED") || type.equalsIgnoreCase("M")) {
+            getEntity(eName).addAttr(attach, aName, AttrType.MULTIVALUED);
+        } else if (type.equalsIgnoreCase("DERIVED") || type.equalsIgnoreCase("D")) {
+            getEntity(eName).addAttr(attach, aName, AttrType.DERIVED);
+        } else {
+            System.err.println("Attribute Type " + type + " is not acceptable.");
+            System.err.println("Choose COMPOSITE, SIMPLE, MULTIVALUED, or DERIVED.");
+        }//if-else
+    }//addAttrToEntity
+    
+    //setKeyAttrOfEnt: set the key attributes of an entity type
+    public void setKeyAttrOfEnt(String eName, String... keys) {
+        getEntity(eName).setKeyAttr(keys);
+    }//setKeyAttrOfEnt
+    
+    ///////////////////////
+    // GETTERS + SETTERS //
+    ///////////////////////
     
     public Relationship getRelationship(String name) {
         try {
@@ -111,21 +140,21 @@ public class ERModel {
     
     @Override
     public String toString() {
-        String ret = this.getName() + ":\n";
+        String ret = this.getName() + ":\n\n";
         if (!regEntities.isEmpty()) {
-            ret += "Regular Entities:\n* * * * * * * *\n";
+            ret += "***Regular Entities***\n\n";
             for (Entity e : regEntities)
-                ret += e.toString();
+                ret += e.toString() + "\n";
         }//if
         if (!weakEntities.isEmpty()) {
-            ret += "Weak Entities:\n* * * * * * * *\n";
+            ret += "***Weak Entities***\n\n";
             for (Entity e : weakEntities)
-                ret += e.toString();
+                ret += e.toString() + "\n";
         }//if
         if (!relationships.isEmpty()) {
-            ret += "Relationships:\n* * * * * * * *\n";
+            ret += "***Relationships***\n\n";
             for (Relationship r : relationships)
-                ret += r.toString();
+                ret += r.toString() + "\n";
         }//if
         return ret;
     }
@@ -145,6 +174,9 @@ public class ERModel {
         company.addRegEntity(employee);
         company.addRegEntity(department);
         company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
+        company.addAttrToEntity(department, department, "Dept No.", "Simple");
+        company.setKeyAttrOfEnt(department, "Dept No.");
+        company.addAttrToEntity(department, department, "Location", "Multivalued");
         company.display();
         company.getEntity("Project");
         company.getRelationship("Works On");

@@ -10,17 +10,17 @@ import java.util.ArrayList;
 /**
  *
  * @author caldw
- * Attribute: an Attribute has a name and can be simple, composite, or multivalued
+ * EAttribute: an EAttribute has a name and can be simple, composite, or multivalued
  */
-public class Attribute {
+public class EAttribute {
     
     private String name;
     private AttrType type;
     private final int level;
     private String indent;
-    private ArrayList<Attribute> comp; //simple attribute components that make up a composite attribute
+    private ArrayList<EAttribute> comp; //simple attribute components that make up a composite attribute
     
-    public Attribute(String name, AttrType type, int level) {
+    public EAttribute(String name, AttrType type, int level) {
         this.name = name; //name of the attribute
         this.type = type; //type of the attribute
         comp = new ArrayList<>(); //initialize a composite's sub-attributes if needed
@@ -42,7 +42,7 @@ public class Attribute {
             System.err.println("Cannot add branching attributes - Not a COMPOSITE attribute");
             return;
         }
-        Attribute a = new Attribute(cname, ctype, level + 1);
+        EAttribute a = new EAttribute(cname, ctype, level + 1);
         comp.add(a);
     }//addCompAttr
     
@@ -50,7 +50,7 @@ public class Attribute {
     @Override
     public String toString() {
         String ret = name + " (" + type.toString() + ")";
-        for (Attribute a : comp) {
+        for (EAttribute a : comp) {
             ret = ret + "\n" + indent + " -> " + a.toString();
         }
         return ret;
@@ -60,15 +60,15 @@ public class Attribute {
         System.err.println(this.toString());
     }
     
-    public Attribute getSubAttribute(String name) {
+    public EAttribute getSubAttribute(String name) {
         if (this.name.equals(name))
             return this;
-        for (Attribute a : comp) {
+        for (EAttribute a : comp) {
             if (a.getName().equals(name)) {
                 return a;
             } else {
                 if (a.getType() == AttrType.COMPOSITE) {
-                    Attribute b = a.getSubAttribute(name);
+                    EAttribute b = a.getSubAttribute(name);
                     if (b != null)
                         return b;
                 }
@@ -85,24 +85,24 @@ public class Attribute {
         return type;
     }
 
-    public ArrayList<Attribute> getComp() {
+    public ArrayList<EAttribute> getComp() {
         return comp;
     }
     
     public static void main(String args[]) {
-        Attribute location = new Attribute("Location", AttrType.MULTIVALUED, 0);
+        EAttribute location = new EAttribute("Location", AttrType.MULTIVALUED, 0);
         location.display();
-        Attribute numOfItems = new Attribute("No. of Items", AttrType.DERIVED, 0);
+        EAttribute numOfItems = new EAttribute("No. of Items", AttrType.DERIVED, 0);
         numOfItems.display();
         
-        Attribute addr = new Attribute("Address", AttrType.COMPOSITE, 0);
+        EAttribute addr = new EAttribute("Address", AttrType.COMPOSITE, 0);
         addr.addCompAttr("Street", AttrType.SIMPLE);
         addr.addCompAttr("Apt. No.", AttrType.SIMPLE);
         addr.addCompAttr("State", AttrType.SIMPLE);
         addr.addCompAttr("Zip Code", AttrType.SIMPLE);
         addr.display();
         
-        Attribute food = new Attribute("Food", AttrType.COMPOSITE, 0);
+        EAttribute food = new EAttribute("Food", AttrType.COMPOSITE, 0);
         
         food.addCompAttr("Fats", AttrType.COMPOSITE);
         food.getSubAttribute("Fats").addCompAttr("Candy", AttrType.COMPOSITE);

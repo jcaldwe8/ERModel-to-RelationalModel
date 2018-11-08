@@ -20,7 +20,7 @@ public class Entity {
     private String name;
     private EntityType type;
     private String idRel; //name of identifying relationship
-    private ArrayList<Attribute> attr;
+    private ArrayList<EAttribute> attr;
     private Set<String> keyAttr;
     
     public Entity(String name, EntityType type) {
@@ -41,35 +41,48 @@ public class Entity {
         this.idRel = idRel;
     }//constructor(for weak)
     
-    //addAttr: add an attribute to this Entity
-    public void addAttr(String name, AttrType type) {
-        Attribute a = new Attribute(name, type, 0);
-        attr.add(a);
+    //addAttr: add an attribute either to the Entity or to a Composite EAttribute
+    // attach: what the new attribute will be `attached' to
+    // aname: name of the added attribute
+    // type: type of the added attribute
+    public void addAttr(String attach, String aName, AttrType type) {
+        if (attach.equals(name)) {
+            addAttrToEnt(aName, type);
+        } else {
+            addAttrToComp(attach, aName, type);
+        }//if-else
     }//addAttr
     
+    //addAttrToEnt: add an attribute to this Entity
+    private void addAttrToEnt(String name, AttrType type) {
+        EAttribute a = new EAttribute(name, type, 0);
+        attr.add(a);
+    }//addAttrToEnt
+    
     //addAttrToComp: add a sub-attribute to a composite attribute
-    public void addAttrToComp(String parAttr, String cname, AttrType ctype) {
-        for (Attribute a : attr) {
+    private void addAttrToComp(String parAttr, String aName, AttrType ctype) {
+        for (EAttribute a : attr) {
             if (a.getName().equals(parAttr) && a.getType() == AttrType.COMPOSITE) {
-                a.addCompAttr(cname, ctype);
+                a.addCompAttr(aName, ctype);
                 return;
             } else if (a.getType() == AttrType.COMPOSITE) {
-                Attribute b;
+                EAttribute b;
                 b = a.getSubAttribute(parAttr);
                 if (b.getName().equals(parAttr)) { 
-                    b.addCompAttr(cname, ctype);
+                    b.addCompAttr(aName, ctype);
                     return;
                 }
             }//if
         }//for
     }//addAttrToComp
 
-    public void setKeyAttr(String... attrs) {
+    //setKeyAttr: set the key attributes of this entity type
+    public void setKeyAttr(String... keys) {
         keyAttr.clear();
         boolean in;
-        for (String a : attrs) {
+        for (String a : keys) {
             in = false;
-            for (Attribute at : attr) {
+            for (EAttribute at : attr) {
                 if (at.getName().equals(a)) {
                     in = true;
                     break;
@@ -98,9 +111,9 @@ public class Entity {
         if (type == EntityType.WEAK) {
             ret = ret + "\nIdentifying Relationship: " + idRel;
         }//if
-        ret += "\n- - - - - -\n";
+        ret += "\n- - - - - -";
         String key = "";
-        for (Attribute a : attr) {
+        for (EAttribute a : attr) {
             if (keyAttr.contains(a.getName())) { 
                 key = "*"; 
             }//if
@@ -108,7 +121,8 @@ public class Entity {
             key = "";
         }//for
         if (attr.isEmpty())
-            ret += "(no attributes)\n\n";
+            ret += "\n(no attributes)";
+        ret += "\n";
         return ret;
     }//toString
     
@@ -118,16 +132,16 @@ public class Entity {
     
     public static void main(String args[]) {
         Entity car = new Entity("Car", EntityType.REG);
-        car.addAttr("Licence Plate#", AttrType.SIMPLE);
-        car.addAttr("Registration", AttrType.COMPOSITE);
-        car.addAttrToComp("Registration", "State", AttrType.SIMPLE);
-        car.addAttrToComp("Registration", "Number", AttrType.SIMPLE);
+        car.addAttr("Car", "Licence Plate#", AttrType.SIMPLE);
+        car.addAttr("Car", "Registration", AttrType.COMPOSITE);
+        car.addAttr("Registration", "State", AttrType.SIMPLE);
+        car.addAttr("Registration", "Number", AttrType.SIMPLE);
         car.setKeyAttr("Licence Plate#");
         car.display();
         
         Entity bankBranch = new Entity("Bank Branch", EntityType.WEAK, "Branch");
-        bankBranch.addAttr("Branch No.", AttrType.SIMPLE);
-        bankBranch.addAttr("Location", AttrType.SIMPLE);
+        bankBranch.addAttr("Bank Branch", "Branch No.", AttrType.SIMPLE);
+        bankBranch.addAttr("Bank Branch", "Location", AttrType.SIMPLE);
         bankBranch.display();
         bankBranch.setKeyAttr("Branch No.", "Location");
         bankBranch.display();

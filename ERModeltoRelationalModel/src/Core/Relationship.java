@@ -21,7 +21,7 @@ public class Relationship {
     Entity leftEnt, rightEnt;
     Participation leftPar, rightPar;
     Cardinality leftCar, rightCar;
-    ArrayList<Attribute> attr;
+    ArrayList<EAttribute> attr;
     
     public Relationship(String name) {
         this.name = name;
@@ -57,14 +57,18 @@ public class Relationship {
         attr = new ArrayList<>();
     }//constructor
 
-    public void addAttribute(Attribute a) {
+    public void addAttribute(EAttribute a) {
         attr.add(a);
     }//addAttribute
+    
+    ///////////////////
+    // toString info //
+    ///////////////////
     
     @Override
     public String toString() {
         String ret;
-        ret = "Relationship: " + name + "\n= = = = = = =";
+        ret = name + "\n= = = = = = =";
         ret = ret + "\nFirst Entity: " + leftEnt.getName() + "(" + leftEnt.getType() + ")";
         ret = ret + "\nParicipation: " + leftPar.toString();
         ret = ret + "\nCardinality: " + leftCar.toString();
@@ -75,9 +79,34 @@ public class Relationship {
         return ret + "\n";
     }//toString
     
+    public String visualString() {
+        String LP = participationSymbol(leftPar);
+        String RP = participationSymbol(rightPar);
+        String ret;
+        ret = leftEnt.getName() + "(" + leftEnt.getType() + ")";
+        ret += "\n   " + LP + " " + leftCar.toString() + "\n";
+        ret += name;
+        ret += "\n   " + RP + " " + rightCar.toString() + "\n";
+        ret += rightEnt.getName() + "(" + rightEnt.getType() + ")";
+        return ret;
+    }//visualString
+    
+    private String participationSymbol(Participation p) {
+        if (p == Participation.FULL) {
+            return "||";
+        } else if (p == Participation.PARTIAL) {
+            return " |";
+        }
+        return "ERROR";
+    }
+    
     public void display() {
         System.err.println("\n" + this.toString());
     }//display
+    
+    public void visDisplay() {
+        System.err.println("\n" + this.visualString());
+    }//visDisplay
     
     ///////////////////////
     // Getters + Setters //
@@ -152,6 +181,7 @@ public class Relationship {
         worksFor.setLeftCar(cWorksForEmp);
         worksFor.setRightCar(cWorksForDep);
         worksFor.display();
+        worksFor.visDisplay();
     }
     
 }
