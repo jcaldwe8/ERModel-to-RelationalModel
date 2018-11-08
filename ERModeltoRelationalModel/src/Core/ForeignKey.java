@@ -8,8 +8,25 @@ package Core;
 /**
  *
  * @author caldw
+ * ForeignKey: an attribute may reference a `foreign' relation and attribute, this is the foreign key
+ *             the relation and attribute are represented by strings, making sure they are sensible is
+ *             ensured at the higher level
  */
 public class ForeignKey {
-    private RAttribute attr;
-    private RAttribute reference;
+    private String relRef; //attribute in relation
+    private String attrRef; //attribute referenced by attr
+    
+    public ForeignKey(String relRef, String attrRef) {
+        this.relRef = relRef;
+        this.attrRef = attrRef;
+    }//Constructor
+    
+    public String getRelRef() {
+        return relRef;
+    }
+    
+    public String getAttrRef() {
+        return attrRef;
+    }
+    
 }
