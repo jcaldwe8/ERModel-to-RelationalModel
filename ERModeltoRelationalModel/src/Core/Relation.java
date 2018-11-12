@@ -5,10 +5,15 @@
  */
 package Core;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author caldw
  */
 public class Relation {
+    
+    ArrayList<RAttribute> attr;
+    ArrayList<FunctDep> F;
     
 }
