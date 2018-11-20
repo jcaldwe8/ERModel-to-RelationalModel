@@ -108,6 +108,19 @@ public class Entity {
         return attr;
     }
     
+    public EAttribute getAttr(String a) {
+        try {
+            for (EAttribute e : this.getAttr())
+                if (e.getName().equals(a))
+                    return e;
+            System.err.println("Couldn't find Attribute with name " + a + "\nReturning NULL element");
+            throw new ElementNotFound("The Attribute with name " + a + " was not found!!");
+        } catch (ElementNotFound e) {
+            e.printStackTrace();
+        }
+        return new EAttribute("NULL", AttrType.NULL, -1);
+    }//getAttr
+    
     public Set<String> getKey() {
         return keyAttr;
     }

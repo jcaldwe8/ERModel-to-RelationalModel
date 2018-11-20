@@ -11,5 +11,5 @@ package Core;
  * AttrType: an Attribute can be simple, composite, multivalued, or derived
  */
 public enum AttrType {    
-    SIMPLE, COMPOSITE, MULTIVALUED, DERIVED;    
+    SIMPLE, COMPOSITE, MULTIVALUED, DERIVED, NULL;    
 }

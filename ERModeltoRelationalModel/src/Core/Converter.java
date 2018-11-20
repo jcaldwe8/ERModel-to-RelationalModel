@@ -33,13 +33,10 @@ public class Converter {
         return simple;
     }//getSimpleComponents
     
-    private static void regEntConvert(ERModel erm, RelModel rm) {
-        String name;
+    private static void extractAttributes(RelModel rm, Entity e, ArrayList<String> keys) {
+        String name = e.getName();
         boolean key = false;
-        for (Entity e : erm.getRegEntities()) {
-            ArrayList<String> keys = new ArrayList<>();
-            name = e.getName();
-            rm.addRelation(name);
+        rm.addRelation(name);
             for (EAttribute ea : e.getAttr()) { //add all simple attributes in an entity
                 if (e.getKey().contains(ea.getName()))
                     key = true; //is this attribute a key for the entity
@@ -56,15 +53,49 @@ public class Converter {
                 }//if-else
                 key = false;
             }//for-each
-            rm.getRelation(name).setKeyAttr(keys); //set the keys for this relation
+    }//extractAttributes
+    
+    private static void regEntConvert(ERModel erm, RelModel rm) {
+        for (Entity e : erm.getRegEntities()) {
+            ArrayList<String> keys = new ArrayList<>();
+            extractAttributes(rm, e, keys);
+            rm.getRelation(e.getName()).setKeyAttr(keys); //set the keys for this relation
         }//for-each
     }//regEntConvert
     
+    private static ArrayList<String> includeIDRel(RelModel rm, ERModel erm, Entity e) {
+        Relationship r = erm.getRelationship(e.getIDRel());
+        ArrayList<String> parKeys = new ArrayList<>();
+        Entity par;
+        String eName = e.getName();
+        String parName;
+        if (r.getLeftEnt().getName().equals(e.getName())) {
+            par = r.getRightEnt();
+        } else {
+            par = r.getLeftEnt();
+        }//if-else
+        for (String a : par.getKey()) {
+            if (par.getAttr(a).isSimple()) {
+                rm.addAttr(eName, a, par.getName(), a);
+                parKeys.add(a);
+            } else if (par.getAttr(a).isComposite()) {
+                parName = par.getName();
+                for (EAttribute comp : getSimpleComponents(par.getAttr(a))) {
+                    rm.addAttr(eName, comp.getName(), parName, comp.getName());
+                    parKeys.add(comp.getName());
+                }//for-each
+            }//if-else
+        }//for-each
+        
+        return parKeys;
+    }//includeIDRel
+    
     private static void weakEntConvert(ERModel erm, RelModel rm) {
-        String name;
-        boolean key = false;
         for (Entity e : erm.getWeakEntities()) {
-            
+            ArrayList<String> keys = new ArrayList<>();
+            extractAttributes(rm, e, keys);
+            keys.addAll(includeIDRel(rm, erm, e));
+            rm.getRelation(e.getName()).setKeyAttr(keys);
         }//for-each
     }//weakEntConvert
     
@@ -77,11 +108,16 @@ public class Converter {
         er.addAttrToEntity("Employee", "Employee", "Address", "C");
         er.addAttrToEntity("Employee", "Address", "Street", "S");
         er.addAttrToEntity("Employee", "Address", "House#", "S");
+        er.setKeyAttrOfEnt("Employee", "SSN");
         er.addRegEntity("ProductType");
         er.addAttrToEntity("ProductType", "ProductType", "Category", "M");
+        er.addAttrToEntity("ProductType", "ProductType", "Type", "S");
+        er.setKeyAttrOfEnt("ProductType", "Type");
         er.addWeakEntity("Product", "HasType");
         er.addAttrToEntity("Product", "Product", "Name", "S");
+        er.setKeyAttrOfEnt("Product", "Name");
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
+        
         Converter.ERtoRel(er).display();
     }
     

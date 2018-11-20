@@ -37,7 +37,7 @@ public class Relation {
     
     //setKeyAttr: set the key attributes of this entity type
     public void setKeyAttr(ArrayList<String> keys) {
-        key.clear();
+        //key.clear();
         boolean in;
         for (String a : keys) {
             in = false;
