@@ -19,9 +19,9 @@ public class RAttribute {
         FK = new ForeignKey("NULL", "NULL");
     }//Constructor
     
-    public RAttribute(String name, ForeignKey FK) {
+    public RAttribute(String name, String relRef, String attrRef) {
         this.name = name;
-        this.FK = FK;
+        this.FK = new ForeignKey(relRef, attrRef);
     }//Constructor
     
     @Override
@@ -48,7 +48,7 @@ public class RAttribute {
     
     public static void main(String args[]) {
         RAttribute ssn = new RAttribute("SSN");
-        RAttribute essn = new RAttribute("Essn", new ForeignKey("Employee", "SSN"));
+        RAttribute essn = new RAttribute("Essn", "Employee", "SSN");
         ssn.display();
         essn.display();
     }

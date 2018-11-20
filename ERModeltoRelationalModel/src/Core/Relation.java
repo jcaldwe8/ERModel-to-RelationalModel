@@ -15,14 +15,16 @@ import java.util.Set;
  */
 public class Relation {
     
+    String name;
     ArrayList<RAttribute> attr;
-    ArrayList<FunctDep> F;
     Set<String> key;
+    ArrayList<FunctDep> F;
     
-    public Relation() {
+    public Relation(String name) {
+        this.name = name;
         attr = new ArrayList<>();
-        F = new ArrayList<>();
         key = new HashSet<>();
+        F = new ArrayList<>();
     }//Constructor
     
     public void addAttr(String a) {
@@ -30,11 +32,11 @@ public class Relation {
     }//addAttr
     
     public void addAttr(String a, String relRef, String attrRef) {
-        attr.add(new RAttribute(a, new ForeignKey(relRef, attrRef)));
+        attr.add(new RAttribute(a, relRef, attrRef));
     }//addAttr
     
     //setKeyAttr: set the key attributes of this entity type
-    public void setKeyAttr(String... keys) {
+    public void setKeyAttr(ArrayList<String> keys) {
         key.clear();
         boolean in;
         for (String a : keys) {
@@ -52,5 +54,37 @@ public class Relation {
             }//if-else
         }//for-each
     }//setKeyAttr
+
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<RAttribute> getAttr() {
+        return attr;
+    }
+
+    public Set<String> getKey() {
+        return key;
+    }
+    
+    @Override
+    public String toString() {
+        String ret = name + "\n----------\n";
+        ret += "Functional Dependencies:\n- - - - - -\n";
+        for (FunctDep fd : F) {
+            fd.toString();
+        }//for-each
+        ret += "Attributes:\n- - - - - -\n";
+        for (RAttribute a : attr) {
+            if (key.contains(a.getName()))
+                ret += "(PK) ";
+            ret += a.toString() + "\n";            
+        }//for-each        
+        return ret + "\n";
+    }
+    
+    public void display() {
+        System.err.println(this.toString());
+    }//display
     
 }

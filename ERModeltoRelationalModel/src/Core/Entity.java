@@ -104,6 +104,18 @@ public class Entity {
         return type;
     }
     
+    public ArrayList<EAttribute> getAttr() {
+        return attr;
+    }
+    
+    public Set<String> getKey() {
+        return keyAttr;
+    }
+    
+    public String getIDRel() {
+        return idRel;
+    }//getIDRel
+    
     @Override
     public String toString() {
         String ret;

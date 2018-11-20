@@ -46,6 +46,27 @@ public class EAttribute {
         comp.add(a);
     }//addCompAttr
     
+    //isSimple: is the attribute simple?
+    public boolean isSimple() {
+        if (this.getType() == AttrType.SIMPLE)
+            return true;
+        return false;
+    }//isSimple
+    
+    //isComposite: is the attribute composite?
+    public boolean isComposite() {
+        if (this.getType() == AttrType.COMPOSITE)
+            return true;
+        return false;
+    }//isComposite
+    
+    //isMultiValued: is the attribute multivalued?
+    public boolean isMultiValued() {
+        if (this.getType() == AttrType.MULTIVALUED)
+            return true;
+        return false;
+    }//isMultiValued
+    
     //print information to a string
     @Override
     public String toString() {

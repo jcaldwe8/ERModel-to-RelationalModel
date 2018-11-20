@@ -22,13 +22,13 @@ public class FunctDep {
         rhs = new ArrayList<>();
     }//constructor
     
-    public void addLHS(String... F) {
+    public void addLHS(ArrayList<String> F) {
         for (String fd : F) {
             lhs.add(fd);
         }//for-each
     }//addLHS
     
-    public void addRHS(String... F) {
+    public void addRHS(ArrayList<String> F) {
         for (String fd : F) {
             rhs.add(fd);
         }//for-each
@@ -42,6 +42,27 @@ public class FunctDep {
         return rhs;
     }
     
+    @Override
+    public String toString() {
+        String ret = "";
+        ret += itemize(lhs);
+        ret += " -> ";
+        ret += itemize(rhs);
+        return ret;
+    }
     
+    public String itemize(ArrayList<String> list) {
+        String item = "";
+        boolean first = true;
+        for (String a : list) {
+            if (first) {
+                item += a;
+                first = false;
+            } else {
+                item += ", " + a;
+            }//if-else
+        }//for-each
+        return item;
+    } 
     
 }
