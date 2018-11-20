@@ -61,7 +61,11 @@ public class Converter {
     }//regEntConvert
     
     private static void weakEntConvert(ERModel erm, RelModel rm) {
-        
+        String name;
+        boolean key = false;
+        for (Entity e : erm.getWeakEntities()) {
+            
+        }//for-each
     }//weakEntConvert
     
     
@@ -77,7 +81,7 @@ public class Converter {
         er.addAttrToEntity("ProductType", "ProductType", "Category", "M");
         er.addWeakEntity("Product", "HasType");
         er.addAttrToEntity("Product", "Product", "Name", "S");
-        
+        er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
         Converter.ERtoRel(er).display();
     }
     

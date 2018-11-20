@@ -7,6 +7,8 @@ package Core;
 
 import Core.Cardinality.CardVal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -46,17 +48,35 @@ public class Relationship {
         attr = new ArrayList<>();
     }//constructor
     
-    public Relationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+    public Relationship(String name, Entity LE, Entity RE, String LP, String RP, String LC, String RC) {
         this.name = name;
         leftEnt = LE;
         rightEnt = RE;
-        leftPar = LP;
-        rightPar = RP;
-        leftCar = LC;
-        rightCar = RC;
+        leftPar = stringToPart(LP);
+        rightPar = stringToPart(RP);
+        leftCar = stringToCard(LC);
+        rightCar = stringToCard(RC);
         attr = new ArrayList<>();
     }//constructor
 
+    
+    private Participation stringToPart(String part) {
+        if (part.equalsIgnoreCase("PARTIAL") || part.equalsIgnoreCase("P"))
+            return Participation.PARTIAL;
+        return Participation.FULL; //default to FULL if not specified as partial
+    }//stringToPart
+    
+    private Cardinality stringToCard(String card) {
+        if (card.equalsIgnoreCase("N"))
+            return new Cardinality(CardVal.N);
+        if (card.equalsIgnoreCase("M"))
+            return new Cardinality(CardVal.M);
+        if (card.equalsIgnoreCase("1") || card.equalsIgnoreCase("ONE"))
+            return new Cardinality(CardVal.ONE);
+        List<String> minmax = Arrays.asList(card.split(","));
+        return new Cardinality(Integer.valueOf(minmax.get(0)), Integer.valueOf(minmax.get(1)));
+    }//stringToCard
+    
     public void addAttribute(EAttribute a) {
         attr.add(a);
     }//addAttribute

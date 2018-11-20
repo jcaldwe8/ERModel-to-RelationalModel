@@ -36,7 +36,7 @@ public class ERModel {
         weakEntities.add(e);
     }//addWeakEntity
     
-    public void addRelationship(String name, Entity LE, Entity RE, Participation LP, Participation RP, Cardinality LC, Cardinality RC) {
+    public void addRelationship(String name, Entity LE, Entity RE, String LP, String RP, String LC, String RC) {
         if (!checkEnt(LE) || !checkEnt(RE))
             return;
         Relationship r = new Relationship(name, LE, RE, LP, RP, LC, RC);
@@ -167,13 +167,9 @@ public class ERModel {
         ERModel company = new ERModel("Company");
         String employee = "Employee";
         String department = "Department";
-        Participation pWorksForEmp = Participation.FULL;
-        Participation pWorksForDep = Participation.PARTIAL;
-        Cardinality cWorksForEmp = new Cardinality(1,3);
-        Cardinality cWorksForDep = new Cardinality(Cardinality.CardVal.N);
         company.addRegEntity(employee);
         company.addRegEntity(department);
-        company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), pWorksForEmp, pWorksForDep, cWorksForEmp, cWorksForDep);
+        company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), "Full", "Partial", "1,3", "N");
         company.addAttrToEntity(department, department, "Dept No.", "Simple");
         company.setKeyAttrOfEnt(department, "Dept No.");
         company.addAttrToEntity(department, department, "Location", "Multivalued");
