@@ -17,13 +17,17 @@ public class ERModel {
     String name;
     ArrayList<Entity> regEntities;
     ArrayList<Entity> weakEntities;
-    ArrayList<Relationship> relationships;
+    ArrayList<Relationship> relationships, bin1to1, bin1toN, binMtoN, binRange;
     
     public ERModel(String name) {
         this.name = name;
         regEntities = new ArrayList<>();
         weakEntities = new ArrayList<>();
         relationships = new ArrayList<>();
+        bin1to1 = new ArrayList<>();
+        bin1toN = new ArrayList<>();
+        binMtoN = new ArrayList<>();
+        binRange = new ArrayList<>();
     }//constructor
     
     public void addRegEntity(String name) {
@@ -89,6 +93,27 @@ public class ERModel {
         getEntity(eName).setKeyAttr(keys);
     }//setKeyAttrOfEnt
     
+    //organizeRel: organize the relationships by cardinality
+    // mainly used for converting into a relational model
+    // we don't use identifying relationships, since they are converted in a previous step
+    public void organizeRel() {
+        bin1to1.clear();
+        bin1toN.clear();
+        binMtoN.clear();
+        binRange.clear();
+        for (Relationship r : relationships) {
+            if (r.getType().equals("1:1") && !r.isIDRel()) {
+                bin1to1.add(r);
+            } else if (r.getType().equals("1:N") && !r.isIDRel()) {
+                bin1toN.add(r);
+            } else if (r.getType().equals("M:N") && !r.isIDRel()) {
+                binMtoN.add(r);
+            } else if (r.getType().matches("Range$") && !r.isIDRel()) {
+                binRange.add(r);
+            }//if-else
+        }//for-each
+    }//organizeRel
+    
     ///////////////////////
     // GETTERS + SETTERS //
     ///////////////////////
@@ -136,6 +161,22 @@ public class ERModel {
     
     public String getName() {
         return name;
+    }
+
+    public ArrayList<Relationship> getBin1to1() {
+        return bin1to1;
+    }
+
+    public ArrayList<Relationship> getBin1toN() {
+        return bin1toN;
+    }
+
+    public ArrayList<Relationship> getBinMtoN() {
+        return binMtoN;
+    }
+
+    public ArrayList<Relationship> getBinRange() {
+        return binRange;
     }
     
     @Override

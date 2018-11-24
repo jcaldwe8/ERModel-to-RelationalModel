@@ -58,7 +58,6 @@ public class Relationship {
         rightCar = stringToCard(RC);
         attr = new ArrayList<>();
     }//constructor
-
     
     private Participation stringToPart(String part) {
         if (part.equalsIgnoreCase("PARTIAL") || part.equalsIgnoreCase("P"))
@@ -80,6 +79,31 @@ public class Relationship {
     public void addAttribute(EAttribute a) {
         attr.add(a);
     }//addAttribute
+    
+    public boolean isIDRel() {
+        if (leftEnt.isWeak() && leftEnt.getIDRel().equals(this.getName())) {
+            return true;
+        } else if (rightEnt.isWeak() && rightEnt.getIDRel().equals(this.getName())) {
+            return true;
+        }//if-else
+        return false;
+    }//isIDRel
+    
+    public String getType() {
+        if (leftCar.isOne() && rightCar.isOne()) {
+            return "1:1";
+        } else if ((leftCar.isOne() && rightCar.isN()) || (leftCar.isN() && rightCar.isOne())) {
+            return "1:N";
+        } else if (leftCar.isN() && rightCar.isN()) {
+            return "M:N";
+        } else if (leftCar.isRange()) {
+            return rightCar.toString() + ":Range";
+        } else if (rightCar.isRange()) {
+            return leftCar.toString() + ":Range";
+        }//if-else
+        
+        return "Range:Range";
+    }//getType
     
     ///////////////////
     // toString info //

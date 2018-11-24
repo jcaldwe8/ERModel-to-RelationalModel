@@ -67,6 +67,24 @@ public class Cardinality {
         this.max = max;
     }//alterRange
     
+    public boolean isOne() {
+        if (value == CardVal.ONE)
+            return true;
+        return false;
+    }//isOne
+    
+    public boolean isN() {
+        if (value == CardVal.N || value == CardVal.M)
+            return true;
+        return false;
+    }//isN
+    
+    public boolean isRange() {
+        if (min > -1 && max > -1) 
+            return true;
+        return false;
+    }//isRange
+    
     @Override
     public String toString() {
         String ret;

@@ -96,6 +96,12 @@ public class Entity {
         }//for-each
     }//setKeyAttr
     
+    public boolean isWeak() {
+        if (this.getType() == EntityType.WEAK)
+            return true;
+        return false;
+    }//isWeak
+    
     public String getName() {
         return name;
     }

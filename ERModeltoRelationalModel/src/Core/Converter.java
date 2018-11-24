@@ -18,6 +18,7 @@ public class Converter {
         RelModel rm = new RelModel(erm.getName());
         regEntConvert(erm, rm);
         weakEntConvert(erm, rm);
+        binRelConvert(erm, rm);
         return rm;
     }//ERtoRel
     
@@ -99,7 +100,24 @@ public class Converter {
         }//for-each
     }//weakEntConvert
     
+    private static void bin1to1Convert(ArrayList<Relationship> rels, RelModel rm) {
+        
+    }//bin1to1Convert
     
+    private static void bin1toNConvert(ArrayList<Relationship> rels, RelModel rm) {
+        
+    }//bin1to1Convert
+    
+    private static void binMtoNConvert(ArrayList<Relationship> rels, RelModel rm) {
+        
+    }//bin1to1Convert
+    
+    private static void binRelConvert(ERModel erm, RelModel rm) {
+        erm.organizeRel();
+        bin1to1Convert(erm.getBin1to1(), rm);
+        bin1toNConvert(erm.getBin1toN(), rm);
+        binMtoNConvert(erm.getBinMtoN(), rm);
+    }//relConvert
     
     public static void main(String args[]) {
         ERModel er = new ERModel("Company");
@@ -118,6 +136,7 @@ public class Converter {
         er.setKeyAttrOfEnt("Product", "Name");
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
         
+        er.display();
         Converter.ERtoRel(er).display();
     }
     
