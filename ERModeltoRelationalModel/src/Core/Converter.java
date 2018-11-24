@@ -100,8 +100,46 @@ public class Converter {
         }//for-each
     }//weakEntConvert
     
-    private static void bin1to1Convert(ArrayList<Relationship> rels, RelModel rm) {
+    private static ArrayList<String> addPKasFK(String newR, Relation ref, RelModel rm) {
+        ArrayList<String> keys = new ArrayList<>();
+        for (String ra : ref.getKey()) {
+            rm.addAttr(newR, ra, ref.getName(), ra);
+            keys.add(ra);
+        }//for-each
+        return keys;
+    }//addPKasFK
+    
+    private static void foreignKeyApproach(Relationship r, RelModel rm) {
         
+    }//foreignKeyApproach
+    
+    private static void mergedRelationApproach(Relationship r, RelModel rm) {
+        
+    }//mergedRelationApproach
+    
+    private static void crossReferenceApproach(Relationship r, RelModel rm) {
+        ArrayList<String> keys = new ArrayList<>();
+        rm.addRelation(r.getName());
+        keys = addPKasFK(r.getName(), rm.getRelation(r.getLeftEnt().getName()), rm);
+        keys.addAll(addPKasFK(r.getName(), rm.getRelation(r.getRightEnt().getName()), rm));
+        rm.getRelation(r.getName()).setKeyAttr(keys);
+        for (EAttribute ea : r.getAttr()) {
+            rm.addAttr(r.getName(), ea.getName());
+        }//for-each
+    }//crossReferenceApproach
+    
+    private static void bin1to1Convert(ArrayList<Relationship> rels, RelModel rm) {
+        for (Relationship r : rels) {
+            if (r.getParticipations().equals("FP")) {
+                foreignKeyApproach(r, rm);
+            } else if (r.getParticipations().equals("FF")) {
+                mergedRelationApproach(r, rm);
+            } else if (r.getParticipations().equals("PP")) {
+                crossReferenceApproach(r, rm);
+            } else {
+                System.err.println("Error obtaining participations of " + r.toString());
+            }//if-else
+        }//for-each
     }//bin1to1Convert
     
     private static void bin1toNConvert(ArrayList<Relationship> rels, RelModel rm) {

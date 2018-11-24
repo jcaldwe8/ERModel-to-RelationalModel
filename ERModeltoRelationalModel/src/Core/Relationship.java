@@ -105,6 +105,20 @@ public class Relationship {
         return "Range:Range";
     }//getType
     
+    //getParticipations: return the combination of left and right participations
+    public String getParticipations() {
+        if (leftPar == Participation.FULL && rightPar == Participation.FULL) {
+            return "FF";
+        } else if (leftPar == Participation.FULL && rightPar == Participation.PARTIAL) {
+            return "FP";
+        } else if (leftPar == Participation.PARTIAL && rightPar == Participation.FULL) {
+            return "FP";
+        } else if (leftPar == Participation.PARTIAL && rightPar == Participation.PARTIAL) {
+            return "PP";
+        }//if-else
+        return "NULL";
+    }
+    
     ///////////////////
     // toString info //
     ///////////////////
@@ -210,6 +224,10 @@ public class Relationship {
 
     public void setRightCar(Cardinality rightCar) {
         this.rightCar = rightCar;
+    }
+
+    public ArrayList<EAttribute> getAttr() {
+        return attr;
     }
     
     public static void main(String args[]) {
