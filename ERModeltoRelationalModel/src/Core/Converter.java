@@ -100,6 +100,79 @@ public class Converter {
         }//for-each
     }//weakEntConvert
     
+    //includePKasFK: include the PK of partial in full as a FK
+    // also include any attributes specific to the relationship
+    private static void includePKasFK(String full, String partial, Relationship r, RelModel rm) {
+        for (String key : rm.getRelation(partial).getKey()) {
+            rm.getRelation(full).addAttr(key, partial, key);
+        }//for-each
+        for (EAttribute ea : r.getAttr()) {
+            rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
+        }//for-each
+    }//includePKasFK
+    
+    //foreignKeyApproach: include as a foreign key, the primary key of the partial part., to the full part.
+    // r: the relationship that will become the third relation
+    // rm: the relational model the new relation is added to
+    // 
+    // take the key from the relation with partial participation
+    // add the key attributes as foreign keys to the relation with full participation
+    private static void foreignKeyApproach(Relationship r, RelModel rm) {
+        String Lname = r.getLeftEnt().getName();
+        String Rname = r.getRightEnt().getName();
+        //choose the relation with full participation
+        if (r.leftPar == Participation.FULL) {
+            includePKasFK(Lname, Rname, r, rm);
+        } else {
+            includePKasFK(Rname, Lname, r, rm);
+        }//if-else
+    }//foreignKeyApproach
+    
+    //isKey: is the attribute (name) in the key of relation r?
+    private static boolean isKey(Relation r, String name) {
+        if (r.getKey().contains(name))
+            return true;
+        return false;
+    }//isKey
+    
+    //copyAttr: copy all attributes 'from' one relation 'to' another, keeping track of the primary key
+    private static void copyAttr(String from, String to, ArrayList<String> keys, RelModel rm) {
+        for (RAttribute ra : rm.getRelation(from).getAttr()) {
+            rm.addAttr(to, ra.getName());
+            if (isKey(rm.getRelation(from), ra.getName()))
+                keys.add(ra.getName());
+        }//for-each
+    }//copyAttr
+    
+    //mergedRelationApproach: merge the two relations into one
+    // r: the relationship that will become the third relation
+    // rm: the relational model the new relation is added to
+    //
+    // form a new relation, named based on both relations and the relationship
+    // copy all attributes from both relations
+    // set the primary key
+    // add all attributes specific to the relationship
+    // delete original relations from the relational model
+    private static void mergedRelationApproach(Relationship r, RelModel rm) {
+        ArrayList<String> keys = new ArrayList<>();
+        String name = r.getLeftEnt().getName() + "_" + r.getName() + "(merged)_" + r.getRightEnt().getName();
+        String Lname = r.getLeftEnt().getName();
+        String Rname = r.getRightEnt().getName();
+        rm.addRelation(name);
+        copyAttr(Lname, name, keys, rm);
+        copyAttr(Rname, name, keys, rm);
+        rm.getRelation(r.getName()).setKeyAttr(keys); //set the primary key
+        for (EAttribute ea : r.getAttr()) {
+            rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
+        }//for-each
+        rm.deleteRelation(Lname); //remove the relations after merging is complete
+        rm.deleteRelation(Rname); //all functionality is covered in new relation
+    }//mergedRelationApproach
+    
+    //addPKasFK: add the primary keys of ref to the new relation as foreign keys
+    // newR: name of new relation
+    // ref: reference relation
+    // rm: relational model
     private static ArrayList<String> addPKasFK(String newR, Relation ref, RelModel rm) {
         ArrayList<String> keys = new ArrayList<>();
         for (String ra : ref.getKey()) {
@@ -109,32 +182,34 @@ public class Converter {
         return keys;
     }//addPKasFK
     
-    private static void foreignKeyApproach(Relationship r, RelModel rm) {
-        
-    }//foreignKeyApproach
-    
-    private static void mergedRelationApproach(Relationship r, RelModel rm) {
-        
-    }//mergedRelationApproach
-    
+    //crossReferenceApproach: create a third relation that serves as a 'cross-reference'
+    // r: the relationship that will become the third relation
+    // rm: the relational model the new relation is added to
+    //
+    // the primary keys of both entities in r are added as foreign keys for the new relation
+    // these become the primary key of the relation
+    // any attributes specific to the relationship are added to the relation
     private static void crossReferenceApproach(Relationship r, RelModel rm) {
         ArrayList<String> keys = new ArrayList<>();
-        rm.addRelation(r.getName());
+        rm.addRelation(r.getName()); //define a new relation
+        //add the primary keys of each entity to the new relation
         keys = addPKasFK(r.getName(), rm.getRelation(r.getLeftEnt().getName()), rm);
         keys.addAll(addPKasFK(r.getName(), rm.getRelation(r.getRightEnt().getName()), rm));
-        rm.getRelation(r.getName()).setKeyAttr(keys);
+        rm.getRelation(r.getName()).setKeyAttr(keys); //set the primary key
         for (EAttribute ea : r.getAttr()) {
-            rm.addAttr(r.getName(), ea.getName());
+            rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
         }//for-each
     }//crossReferenceApproach
     
     private static void bin1to1Convert(ArrayList<Relationship> rels, RelModel rm) {
+        String participation;
         for (Relationship r : rels) {
-            if (r.getParticipations().equals("FP")) {
+            participation = r.getParticipations();
+            if (participation.equals("FP")) {
                 foreignKeyApproach(r, rm);
-            } else if (r.getParticipations().equals("FF")) {
+            } else if (participation.equals("FF")) {
                 mergedRelationApproach(r, rm);
-            } else if (r.getParticipations().equals("PP")) {
+            } else if (participation.equals("PP")) {
                 crossReferenceApproach(r, rm);
             } else {
                 System.err.println("Error obtaining participations of " + r.toString());
@@ -143,11 +218,21 @@ public class Converter {
     }//bin1to1Convert
     
     private static void bin1toNConvert(ArrayList<Relationship> rels, RelModel rm) {
-        
+        String participation;
+        for (Relationship r : rels) {
+            participation = r.getParticipations();
+            if (participation.equals("FP") || participation.equals("FF")) {
+                foreignKeyApproach(r, rm);
+            } else {
+                crossReferenceApproach(r, rm);
+            }//if-else
+        }//for-each
     }//bin1to1Convert
     
     private static void binMtoNConvert(ArrayList<Relationship> rels, RelModel rm) {
-        
+        for (Relationship r : rels) {
+            crossReferenceApproach(r, rm);
+        }//for-each
     }//bin1to1Convert
     
     private static void binRelConvert(ERModel erm, RelModel rm) {

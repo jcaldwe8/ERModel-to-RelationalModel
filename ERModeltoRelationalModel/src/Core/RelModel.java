@@ -16,7 +16,6 @@ public class RelModel {
     String name;
     ArrayList<Relation> relations;
     
-    
     public RelModel(String name) {
         this.name = name;
         relations = new ArrayList<>();
@@ -30,10 +29,16 @@ public class RelModel {
         return false;
     }//containsRelation
     
+    //getRelation: return the relation with the given name
+    // in the event that the relation was merged with another during binary relation conversion,
+    // the name was changed, but now includes '(merged)' in the name
     public Relation getRelation(String name) {
         for (Relation r : relations)
-            if (r.getName().equals(name))
-                return r;
+            if (r.getName().equals(name)) {
+                return r; //if the relation name has not been changed
+            } else if (r.getName().contains(name) && r.getName().contains("(merged)_")) {
+                return r; //if the relation was merged during conversion from ER
+            }//if-else
         return new Relation("NULL");
     }//getRelation
     
@@ -58,6 +63,12 @@ public class RelModel {
             return;
         r.addAttr(attr, fkRel, fkAttr);
     }//addAttr
+    
+    //deleteRelation: remove the Relation from the list of relations
+    // used when merging one relation with another
+    public void deleteRelation(String name) {
+        relations.remove(this.getRelation(name));
+    }//deleteRelation
     
     @Override
     public String toString() {
