@@ -104,7 +104,11 @@ public class Converter {
     // also include any attributes specific to the relationship
     private static void includePKasFK(String full, String partial, Relationship r, RelModel rm) {
         for (String key : rm.getRelation(partial).getKey()) {
-            rm.getRelation(full).addAttr(key, partial, key);
+            if (full.equals(partial)) {
+                rm.getRelation(full).addAttr(key + "_" + r.getName(), partial, key);
+            } else {
+                rm.getRelation(full).addAttr(key, partial, key);
+            }//if-else
         }//for-each
         for (EAttribute ea : r.getAttr()) {
             rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
@@ -260,6 +264,7 @@ public class Converter {
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
         er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
         er.addAttrToRelationship("Hours", "Simple", "WorksOn");
+        er.addRelationship("Supervises", er.getEntity("Employee"), er.getEntity("Employee"), "Full", "Partial", "1", "N");
         
         er.display();
         Converter.ERtoRel(er).display();
