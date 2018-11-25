@@ -76,8 +76,8 @@ public class Relationship {
         return new Cardinality(Integer.valueOf(minmax.get(0)), Integer.valueOf(minmax.get(1)));
     }//stringToCard
     
-    public void addAttribute(EAttribute a) {
-        attr.add(a);
+    public void addAttribute(String name, String type) {
+        attr.add(new EAttribute(name, type, 0));
     }//addAttribute
     
     public boolean isIDRel() {

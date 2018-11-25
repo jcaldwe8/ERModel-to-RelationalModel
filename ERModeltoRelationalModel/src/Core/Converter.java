@@ -258,6 +258,8 @@ public class Converter {
         er.addAttrToEntity("Product", "Product", "Name", "S");
         er.setKeyAttrOfEnt("Product", "Name");
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
+        er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
+        er.addAttrToRelationship("Hours", "Simple", "WorksOn");
         
         er.display();
         Converter.ERtoRel(er).display();

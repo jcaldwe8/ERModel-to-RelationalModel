@@ -30,6 +30,26 @@ public class EAttribute {
             indent = indent + "  ";
     }//constructor
     
+    public EAttribute(String name, String type, int level) {
+        this.name = name; //name of the attribute
+        if (type.equalsIgnoreCase("SIMPLE")) {
+            this.type = AttrType.SIMPLE; //type of the attribute 
+        } else if (type.equalsIgnoreCase("COMPOSITE")) {
+            this.type = AttrType.COMPOSITE;
+        } else if (type.equalsIgnoreCase("MULTIVALUED")) {
+            this.type = AttrType.MULTIVALUED;
+        } else if (type.equalsIgnoreCase("DERIVED")) {
+            this.type = AttrType.DERIVED;
+        } else {
+            this.type = AttrType.NULL;
+        }//if-else
+        comp = new ArrayList<>(); //initialize a composite's sub-attributes if needed
+        this.level = level;
+        indent = "";
+        for (int i = 0; i < level; i++)
+            indent = indent + "  ";
+    }//constructor
+    
     //alterType: change the type of the attribute if needed
     public void alterType(AttrType newType) { type = newType; }
     

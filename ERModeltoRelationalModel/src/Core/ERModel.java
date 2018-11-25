@@ -59,10 +59,10 @@ public class ERModel {
     }//checkEnt
     
     //addAttrToRelationship: add an attribute to a relationship
-    public void addAttrToRelationship(EAttribute a, String relName) {
+    public void addAttrToRelationship(String attr, String type, String relName) {
         Relationship r = getRelationship(relName);
         if (!r.getName().equals("NULL")) {
-            r.addAttribute(a);
+            r.addAttribute(attr, type);
         } else {
             System.out.println("Couldn't find Relationship with name " + relName + "\nAttribute not added");
         }
