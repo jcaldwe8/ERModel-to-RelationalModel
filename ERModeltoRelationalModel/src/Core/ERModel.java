@@ -114,6 +114,17 @@ public class ERModel {
         }//for-each
     }//organizeRel
     
+    public ArrayList<MultivaluedAttrTuple> getMVAT() {
+        ArrayList<MultivaluedAttrTuple> mvats = new ArrayList<>();
+        for (Entity e : regEntities) {
+            mvats.add(e.getMultivaluedAttrTuple());
+        }//for-each
+        for (Entity e : weakEntities) {
+            mvats.add(e.getMultivaluedAttrTuple());
+        }//for-each
+        return mvats;
+    }//getMVAT
+    
     ///////////////////////
     // GETTERS + SETTERS //
     ///////////////////////

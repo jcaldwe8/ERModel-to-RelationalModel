@@ -22,6 +22,8 @@ public class Entity {
     private String idRel; //name of identifying relationship
     private ArrayList<EAttribute> attr;
     private Set<String> keyAttr;
+    private MultivaluedAttrTuple mvat;
+    private boolean newMVA;
     
     public Entity(String name, EntityType type) {
         this.name = name;
@@ -29,6 +31,8 @@ public class Entity {
         attr = new ArrayList<>();
         keyAttr = new HashSet<>();
         idRel = "";
+        mvat = new MultivaluedAttrTuple(new ArrayList<EAttribute>(), new HashSet<>(), "");
+        newMVA = false;
     }//constructor(for strong)
     
     public Entity(String name, EntityType type, String idRel) {
@@ -39,6 +43,8 @@ public class Entity {
         if (type != EntityType.WEAK)
             return;
         this.idRel = idRel;
+        mvat = new MultivaluedAttrTuple(new ArrayList<EAttribute>(), new HashSet<>(), "");
+        newMVA = false;
     }//constructor(for weak)
     
     //addAttr: add an attribute either to the Entity or to a Composite EAttribute
@@ -51,6 +57,8 @@ public class Entity {
         } else {
             addAttrToComp(attach, aName, type);
         }//if-else
+        if (type == AttrType.MULTIVALUED)
+            newMVA = true; //added a new multivalued attribute
     }//addAttr
     
     //addAttrToEnt: add an attribute to this Entity
@@ -116,9 +124,12 @@ public class Entity {
     
     public EAttribute getAttr(String a) {
         try {
-            for (EAttribute e : this.getAttr())
-                if (e.getName().equals(a))
-                    return e;
+            for (EAttribute e : this.getAttr()) {
+                //check against e's name and any component attributes
+                EAttribute sub = e.getSubAttribute(a); 
+                if (sub != null)
+                    return sub; //return result if one was found
+            }//for-each
             System.err.println("Couldn't find Attribute with name " + a + "\nReturning NULL element");
             throw new ElementNotFound("The Attribute with name " + a + " was not found!!");
         } catch (ElementNotFound e) {
@@ -126,6 +137,17 @@ public class Entity {
         }
         return new EAttribute("NULL", AttrType.NULL, -1);
     }//getAttr
+    
+    public MultivaluedAttrTuple getMultivaluedAttrTuple() {
+        if (newMVA || !mvat.getEntName().equals(this.getName())) {
+            ArrayList<EAttribute> mva = new ArrayList<>();
+            for (EAttribute e : this.getAttr()) {
+                mva = e.compileMVA(mva); //get all mva's associated with attribute e
+            }//for-each
+            mvat = new MultivaluedAttrTuple(mva, this.getKey(), this.getName());
+        }//if
+        return mvat;
+    }//getMulivaluedAttrTuple
     
     public Set<String> getKey() {
         return keyAttr;

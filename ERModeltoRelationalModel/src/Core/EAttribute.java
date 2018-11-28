@@ -118,6 +118,17 @@ public class EAttribute {
         return null;
     }//getSubAttribute
     
+    public ArrayList<EAttribute> compileMVA(ArrayList<EAttribute> mva) {
+        if (this.isMultiValued()) {
+            mva.add(this);
+        } else if (this.isComposite()) {
+            for (EAttribute e : comp) {
+                e.compileMVA(mva);
+            }//for-each
+        }//if-else
+        return mva;
+    }//compileMVA
+    
     public String getName() {
         return name;
     }

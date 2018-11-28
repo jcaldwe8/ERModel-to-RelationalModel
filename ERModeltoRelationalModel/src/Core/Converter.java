@@ -16,9 +16,10 @@ public class Converter {
     //ERtoRel: convert an entity-relationship model to a relation model
     public static RelModel ERtoRel(ERModel erm) {
         RelModel rm = new RelModel(erm.getName());
-        regEntConvert(erm, rm);
-        weakEntConvert(erm, rm);
-        binRelConvert(erm, rm);
+        regEntConvert(erm, rm); //convert regular entities into relations
+        weakEntConvert(erm, rm); //convert weak entities into relations
+        binRelConvert(erm, rm); //convert relationships into relations
+        multivaluedAttrConvert(erm, rm); //convert multivalued attributes into relations
         return rm;
     }//ERtoRel
     
@@ -205,6 +206,10 @@ public class Converter {
         }//for-each
     }//crossReferenceApproach
     
+    //bin1to1Convert: convert 1-1 relationships into relations
+    // relationships with a full and partial participation apply the foreign key approach
+    // relationships with both full participation apply the merged relation approach
+    // relationships with both partial participation apply the cross reference approach
     private static void bin1to1Convert(ArrayList<Relationship> rels, RelModel rm) {
         String participation;
         for (Relationship r : rels) {
@@ -221,6 +226,9 @@ public class Converter {
         }//for-each
     }//bin1to1Convert
     
+    //bin1toNConvert: convert 1-N relationships into relations
+    // relationships with a full-participation entity apply the foreign key approach
+    // relationships with both entities partial participation apply the cross reference approach
     private static void bin1toNConvert(ArrayList<Relationship> rels, RelModel rm) {
         String participation;
         for (Relationship r : rels) {
@@ -233,18 +241,31 @@ public class Converter {
         }//for-each
     }//bin1to1Convert
     
+    //binMtoNConvert: convert M-N relationships into relations
+    // only the cross reference approach may be applied to relationships of this type
     private static void binMtoNConvert(ArrayList<Relationship> rels, RelModel rm) {
         for (Relationship r : rels) {
             crossReferenceApproach(r, rm);
         }//for-each
     }//bin1to1Convert
     
+    //binRelConvert: convert relationships into relations
+    // call separate functions for each cardinality combo
+    //  + 1-1 relationships
+    //  + 1-N relationships
+    //  + M-N relationships
     private static void binRelConvert(ERModel erm, RelModel rm) {
         erm.organizeRel();
         bin1to1Convert(erm.getBin1to1(), rm);
         bin1toNConvert(erm.getBin1toN(), rm);
         binMtoNConvert(erm.getBinMtoN(), rm);
     }//relConvert
+    
+    private static void multivaluedAttrConvert(ERModel erm, RelModel rm) {
+        for (MultivaluedAttrTuple mvat : erm.getMVAT()) {
+            
+        }//for-each
+    }//multivaluedAttrConvert
     
     public static void main(String args[]) {
         ERModel er = new ERModel("Company");
