@@ -58,6 +58,7 @@ public class ERModel {
         return false;
     }//checkEnt
     
+    //TODO: improve to allow composite functionality
     //addAttrToRelationship: add an attribute to a relationship
     public void addAttrToRelationship(String attr, String type, String relName) {
         Relationship r = getRelationship(relName);
