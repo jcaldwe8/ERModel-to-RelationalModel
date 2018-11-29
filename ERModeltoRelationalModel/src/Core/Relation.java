@@ -18,13 +18,13 @@ public class Relation {
     String name;
     ArrayList<RAttribute> attr;
     Set<String> key;
-    ArrayList<FunctDep> F;
+    //ArrayList<FunctDep> F;
     
     public Relation(String name) {
         this.name = name;
         attr = new ArrayList<>();
         key = new HashSet<>();
-        F = new ArrayList<>();
+        //F = new ArrayList<>();
     }//Constructor
     
     public void addAttr(String a) {
@@ -69,11 +69,11 @@ public class Relation {
     
     @Override
     public String toString() {
-        String ret = name + "\n----------\n";
-        ret += "Functional Dependencies:\n- - - - - -\n";
+        String ret = name + "\n-----------\n";
+        /*ret += "Functional Dependencies:\n- - - - - -\n";
         for (FunctDep fd : F) {
             fd.toString();
-        }//for-each
+        }//for-each*/
         ret += "Attributes:\n- - - - - -\n";
         for (RAttribute a : attr) {
             if (key.contains(a.getName()))

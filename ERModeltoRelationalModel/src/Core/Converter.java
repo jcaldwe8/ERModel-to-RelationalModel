@@ -127,7 +127,15 @@ public class Converter {
         String Rname = r.getRightEnt().getName();
         //choose the relation with full participation
         if (r.leftPar == Participation.FULL) {
-            includePKasFK(Lname, Rname, r, rm);
+            if (r.rightPar == Participation.FULL) {
+                if (r.leftCar.isN()) {
+                    includePKasFK(Lname, Rname, r, rm);
+                } else {
+                    includePKasFK(Rname, Lname, r, rm);
+                }//if-else
+            } else {
+                includePKasFK(Lname, Rname, r, rm);
+            }//if-else
         } else {
             includePKasFK(Rname, Lname, r, rm);
         }//if-else
@@ -290,10 +298,15 @@ public class Converter {
         er.addAttrToEntity("Product", "Product", "Name", "S");
         er.addAttrToEntity("Product", "Product", "AvailableCountries", "M");
         er.setKeyAttrOfEnt("Product", "Name");
-        er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
+        er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "1", "N");
         er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
         er.addAttrToRelationship("Hours", "Simple", "WorksOn");
         er.addRelationship("Supervises", er.getEntity("Employee"), er.getEntity("Employee"), "Full", "Partial", "1", "N");
+        er.addRegEntity("Department");
+        er.addAttrToEntity("Department", "Department", "DeptNo", "S");
+        er.setKeyAttrOfEnt("Department", "DeptNo");
+        er.addRelationship("WorksFor", er.getEntity("Employee"), er.getEntity("Department"), "Full", "Full", "N", "1");
+        er.addRelationship("Manages", er.getEntity("Employee"), er.getEntity("Department"), "Partial", "Full", "1", "1");
         
         er.display();
         Converter.ERtoRel(er).display();
