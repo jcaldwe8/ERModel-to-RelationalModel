@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Core;
+package EntityRelationship;
 
 /**
  *
  * @author caldw
+ * AttrType: an Attribute can be simple, composite, multivalued, or derived
  */
-public enum EntityType {    
-    REG, WEAK, NULL;   
+public enum AttrType {    
+    SIMPLE, COMPOSITE, MULTIVALUED, DERIVED, NULL;    
 }

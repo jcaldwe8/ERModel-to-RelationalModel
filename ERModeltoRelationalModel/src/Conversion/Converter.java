@@ -3,8 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Core;
+package Conversion;
 
+import Relational.RAttribute;
+import Relational.RelModel;
+import Relational.Relation;
+import EntityRelationship.ERModel;
+import EntityRelationship.Relationship;
+import EntityRelationship.Participation;
+import EntityRelationship.EAttribute;
+import EntityRelationship.Entity;
+import EntityRelationship.MultivaluedAttrTuple;
 import java.util.ArrayList;
 
 /**
@@ -126,9 +135,9 @@ public class Converter {
         String Lname = r.getLeftEnt().getName();
         String Rname = r.getRightEnt().getName();
         //choose the relation with full participation
-        if (r.leftPar == Participation.FULL) {
-            if (r.rightPar == Participation.FULL) {
-                if (r.leftCar.isN()) {
+        if (r.getLeftPar() == Participation.FULL) {
+            if (r.getRightPar() == Participation.FULL) {
+                if (r.getLeftCar().isN()) {
                     includePKasFK(Lname, Rname, r, rm);
                 } else {
                     includePKasFK(Rname, Lname, r, rm);

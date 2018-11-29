@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Core;
+package EntityRelationship;
 
 /**
  *
  * @author caldw
  */
-public class RelationalModel {
-    
+public enum Participation {
+    FULL, PARTIAL, NULL;
 }
