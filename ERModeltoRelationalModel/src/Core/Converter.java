@@ -179,10 +179,9 @@ public class Converter {
     // ref: reference relation
     // rm: relational model
     private static ArrayList<String> addPKasFK(String newR, Relation ref, RelModel rm) {
-        ArrayList<String> keys = new ArrayList<>();
-        for (String ra : ref.getKey()) {
+        ArrayList<String> keys = new ArrayList<>(ref.getKey());
+        for (String ra : keys) {
             rm.addAttr(newR, ra, ref.getName(), ra);
-            keys.add(ra);
         }//for-each
         return keys;
     }//addPKasFK
@@ -261,9 +260,17 @@ public class Converter {
         binMtoNConvert(erm.getBinMtoN(), rm);
     }//relConvert
     
+    //multivaluedAttrConvert: convert multivalued attributes into relations
     private static void multivaluedAttrConvert(ERModel erm, RelModel rm) {
+        ArrayList<String> keys;
         for (MultivaluedAttrTuple mvat : erm.getMVAT()) {
-            
+            for (EAttribute e : mvat.getMva()) {
+                rm.addRelation(e.getName());
+                keys = addPKasFK(e.getName(), rm.getRelation(mvat.getEntName()), rm);
+                rm.addAttr(e.getName(), e.getName() + "(attr)");
+                keys.add(e.getName() + "(attr)");
+                rm.getRelation(e.getName()).setKeyAttr(keys);
+            }//for-each
         }//for-each
     }//multivaluedAttrConvert
     
@@ -281,6 +288,7 @@ public class Converter {
         er.setKeyAttrOfEnt("ProductType", "Type");
         er.addWeakEntity("Product", "HasType");
         er.addAttrToEntity("Product", "Product", "Name", "S");
+        er.addAttrToEntity("Product", "Product", "AvailableCountries", "M");
         er.setKeyAttrOfEnt("Product", "Name");
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "N", "1");
         er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
