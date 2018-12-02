@@ -228,7 +228,7 @@ public class ERModel {
         for (Relationship r : relationships)
             content += r.toFile();
 
-        return content;
+        return content + "EOF\n";
     }//toFile
     
     public static void main(String args[]) {

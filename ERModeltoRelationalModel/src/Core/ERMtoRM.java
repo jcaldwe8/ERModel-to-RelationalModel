@@ -10,6 +10,7 @@ import EntityRelationship.ERModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -135,12 +136,9 @@ public class ERMtoRM {
         model.close();
     }//saveModel
     
-    private static void newModel() {
+    private static void addToModel(ERModel erm) {
         Scanner scan = new Scanner(System.in);
-        String name, action;
-        System.err.print("What is the name of the model? ");
-        name = scan.next();
-        ERModel erm = new ERModel(name);
+        String action;
         do {
             //wait a sec before continuing
             //give user a chance to breath
@@ -149,7 +147,7 @@ public class ERMtoRM {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ERMtoRM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.err.println("What would you like to do with " + name + "?");
+            System.err.println("What would you like to do with " + erm.getName() + "?");
             System.err.println("Add: Entity(E), Relationship(R), Attribute(A)");
             System.err.println(" Set Key Attribute(K)\n Convert(C)\n Display(D)\n Exit\\Quit");
             action = scan.next();
@@ -182,10 +180,42 @@ public class ERMtoRM {
             }
         }//if
         System.err.println("Now exiting system...");
+    }//addToModel
+    
+    private static void newModel() {
+        Scanner scan = new Scanner(System.in);
+        String name;
+        System.err.print("What is the name of the model? ");
+        name = scan.next();
+        ERModel erm = new ERModel(name);
+        
+        addToModel(erm);
     }//newModel
     
     private static void loadModel() {
+        Scanner scan = new Scanner(System.in);
+        String filename;
+        System.err.print("Print name of file for loading: ");
+        filename = scan.next();
         
+        LineNumberReader reader = null;
+        
+        try {
+            
+        } catch (Exception ex){
+         ex.printStackTrace();
+        } finally {
+         //Close the LineNumberReader
+            try {
+                if (reader != null){
+                reader.close();
+                }
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }//try-catch
+        }//try-catch-finally
+        
+        //addToModel(erm);
     }//loadModel
     
 }
