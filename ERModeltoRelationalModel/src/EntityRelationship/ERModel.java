@@ -90,7 +90,7 @@ public class ERModel {
     }//addAttrToEntity
     
     //setKeyAttrOfEnt: set the key attributes of an entity type
-    public void setKeyAttrOfEnt(String eName, String... keys) {
+    public void setKeyAttrOfEnt(String eName, ArrayList<String> keys) {
         getEntity(eName).setKeyAttr(keys);
     }//setKeyAttrOfEnt
     
@@ -210,21 +210,38 @@ public class ERModel {
                 ret += r.toString() + "\n";
         }//if
         return ret;
-    }
+    }//toString
     
     public void display() {
         System.err.println("\n" + this.toString());
-    }
+    }//display
+    
+    public String toFile() {
+        String content = this.name + "\n";
+
+        for (Entity e : regEntities)
+            content += e.toFile();
+
+        for (Entity e : weakEntities)
+            content += e.toFile();
+
+        for (Relationship r : relationships)
+            content += r.toFile();
+
+        return content;
+    }//toFile
     
     public static void main(String args[]) {
         ERModel company = new ERModel("Company");
         String employee = "Employee";
         String department = "Department";
+        ArrayList<String> deptKey = new ArrayList<>();
+        deptKey.add("Dept No.");
         company.addRegEntity(employee);
         company.addRegEntity(department);
         company.addRelationship("Works For", company.getEntity(employee), company.getEntity(department), "Full", "Partial", "1,3", "N");
         company.addAttrToEntity(department, department, "Dept No.", "Simple");
-        company.setKeyAttrOfEnt(department, "Dept No.");
+        company.setKeyAttrOfEnt(department, deptKey);
         company.addAttrToEntity(department, department, "Location", "Multivalued");
         company.display();
         company.getEntity("Project");

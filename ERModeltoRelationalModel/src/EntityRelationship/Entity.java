@@ -85,7 +85,7 @@ public class Entity {
     }//addAttrToComp
 
     //setKeyAttr: set the key attributes of this entity type
-    public void setKeyAttr(String... keys) {
+    public void setKeyAttr(ArrayList<String> keys) {
         keyAttr.clear();
         boolean in;
         for (String a : keys) {
@@ -183,20 +183,53 @@ public class Entity {
         System.err.println("\n" + this.toString());
     }
     
+    //toFile: produce a string version of this entity for a file
+    public String toFile() {
+        String content;
+        
+        if (this.isWeak()) {
+            content = "EW\n";
+            content += this.getName() + "\n";
+            content += this.getIDRel() + "\n";
+        } else {
+            content = "ER\n";
+            content += this.getName() + "\n";
+        }//if-else
+        
+        content += "A>\n";
+        for (EAttribute a : attr) {
+            content += a.toFile();
+        }//for-each
+        content += "<A\n";
+        
+        content += "K>\n";
+        for (String k : keyAttr) {
+            content += k + "\n";
+        }//for-each
+        content += "<K\n";
+        
+        return content;
+    }//toFile
+    
     public static void main(String args[]) {
         Entity car = new Entity("Car", EntityType.REG);
         car.addAttr("Car", "Licence Plate#", AttrType.SIMPLE);
         car.addAttr("Car", "Registration", AttrType.COMPOSITE);
         car.addAttr("Registration", "State", AttrType.SIMPLE);
         car.addAttr("Registration", "Number", AttrType.SIMPLE);
-        car.setKeyAttr("Licence Plate#");
+        ArrayList<String> carKey = new ArrayList<>();
+        carKey.add("Licence Plate#");
+        car.setKeyAttr(carKey);
         car.display();
         
         Entity bankBranch = new Entity("Bank Branch", EntityType.WEAK, "Branch");
         bankBranch.addAttr("Bank Branch", "Branch No.", AttrType.SIMPLE);
         bankBranch.addAttr("Bank Branch", "Location", AttrType.SIMPLE);
         bankBranch.display();
-        bankBranch.setKeyAttr("Branch No.", "Location");
+        ArrayList<String> bankBranchKey = new ArrayList<>();
+        bankBranchKey.add("Branch No.");
+        bankBranchKey.add("Location");
+        bankBranch.setKeyAttr(bankBranchKey);
         bankBranch.display();
     }
     

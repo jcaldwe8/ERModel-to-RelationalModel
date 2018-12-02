@@ -92,13 +92,21 @@ public class EAttribute {
     public String toString() {
         String ret = name + " (" + type.toString() + ")";
         for (EAttribute a : comp) {
-            ret = ret + "\n" + indent + " -> " + a.toString();
-        }
+            ret += "\n" + indent + " -> " + a.toString();
+        }//for-each
         return ret;
     }//toString
 
     public void display() {
         System.err.println(this.toString());
+    }
+    
+    public String toFile() {
+        String content = name + ":" + type.toString() + "\n";
+        for (EAttribute a : comp) {
+            content += name + ">" + a.toFile();
+        }//for-each
+        return content;
     }
     
     public EAttribute getSubAttribute(String name) {

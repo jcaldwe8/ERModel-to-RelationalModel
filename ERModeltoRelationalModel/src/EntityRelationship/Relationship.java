@@ -149,6 +149,26 @@ public class Relationship {
         return ret;
     }//visualString
     
+    public String toFile() {
+        String content = "R\n" + this.getName() + "\n";
+        
+        content += this.getLeftEnt().getName() + "\n";
+        content += this.getLeftPar().toString() + "\n";
+        content += this.getLeftCar().toString() + "\n";
+        
+        content += this.getRightEnt().getName() + "\n";
+        content += this.getRightPar().toString() + "\n";
+        content += this.getRightCar().toString() + "\n";
+        
+        content += "A>\n";
+        for (EAttribute a : attr) {
+            content += a.toFile();
+        }//for-each
+        content += "<A\n";
+        
+        return content;
+    }//toFile
+    
     private String participationSymbol(Participation p) {
         if (p == Participation.FULL) {
             return "||";

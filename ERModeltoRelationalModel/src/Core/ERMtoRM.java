@@ -7,6 +7,10 @@ package Core;
 
 import Conversion.Converter;
 import EntityRelationship.ERModel;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +34,10 @@ public class ERMtoRM {
         System.err.println("Would you like to load a file, or start a new model from scratch? (f/n)");
         String method = scan.next();
         if (method.equalsIgnoreCase("N")) {
-            System.err.print("You have chosen to start a new model");
+            System.err.println("You have chosen to start a new model");
             newModel();
         } else if (method.equalsIgnoreCase("F")) {
-            System.err.print("You have chosen to load a previous model");
+            System.err.println("You have chosen to load a previous model");
             loadModel();
         } else {
             System.err.println("Please enter either f or n:");
@@ -47,7 +51,7 @@ public class ERMtoRM {
         String name, weak;
         System.err.print("What is the name of the Entity ");
         name = scan.next();
-        System.err.print("Is it a weak identity? ");
+        System.err.print("Is it a weak Entity? ");
         weak = scan.next();
         if (weak.equalsIgnoreCase("YES") || weak.equalsIgnoreCase("Y")) {
             String idRel;
@@ -85,7 +89,7 @@ public class ERMtoRM {
         System.err.print("What is the name of the attribute? ");
         aName = scan.next();
         System.err.println("What is the type of the attribute?");
-        System.err.print("Options: Simple(S), Composite(C), Multivalued(M), Derived(D)");
+        System.err.print("Options: Simple(S), Composite(C), Multivalued(M), Derived(D) ");
         type = scan.next();
         System.err.print("Is this being added to an Entity(E) or Relationship(R)? ");
         EntOrRel = scan.next();
@@ -100,11 +104,35 @@ public class ERMtoRM {
             System.err.print("To which Relationship are we adding an attribute? ");
             erName = scan.next();
             erm.addAttrToRelationship(aName, type, erName);
-        }//if-else
+        }//if-else 
+        System.err.println();
     }//addAttribute
     
-    private static void saveModel(ERModel erm) {
-        System.err.println("Saving Entity-Relationship model to filename " + erm.getName() + ".dat");        
+    private static void setKeyAttribute(ERModel erm) {
+        Scanner scan = new Scanner(System.in);
+        String entity, attr;
+        ArrayList<String> keys = new ArrayList<>();
+        System.err.print("For which Entity are we setting the key attributes? ");
+        entity = scan.next();
+        System.err.println("Add the names of the attributes one by one");
+        System.err.println("Enter - to finish");
+        attr = scan.next();
+        while (!attr.equals("-")){
+            keys.add(attr);
+            attr = scan.next();
+        }//do while
+        erm.setKeyAttrOfEnt(entity, keys);
+    }//setKeyAttribute
+    
+    //saveModel: save current model information to file
+    private static void saveModel(ERModel erm) throws IOException {
+        String filename = erm.getName() + ".dat";
+        System.err.println("Saving Entity-Relationship model to filename " + filename);
+        FileWriter model = new FileWriter(filename);
+        
+        model.write(erm.toFile());
+        
+        model.close();
     }//saveModel
     
     private static void newModel() {
@@ -123,7 +151,7 @@ public class ERMtoRM {
             }
             System.err.println("What would you like to do with " + name + "?");
             System.err.println("Add: Entity(E), Relationship(R), Attribute(A)");
-            System.err.println("Convert(C)\nDisplay(D)\nExit\\Quit");
+            System.err.println(" Set Key Attribute(K)\n Convert(C)\n Display(D)\n Exit\\Quit");
             action = scan.next();
             
             if (action.equalsIgnoreCase("ENTITY") || action.equalsIgnoreCase("E")) {
@@ -132,8 +160,10 @@ public class ERMtoRM {
                 addRelationship(erm);
             } else if (action.equalsIgnoreCase("ATTRIBUTE") || action.equalsIgnoreCase("A")) {
                 addAttribute(erm);
+            } else if (action.equalsIgnoreCase("SET KEY") || action.equalsIgnoreCase("K")) {
+                setKeyAttribute(erm);    
             } else if (action.equalsIgnoreCase("CONVERT") || action.equalsIgnoreCase("C")) {
-                Converter.ERtoRel(erm);
+                Converter.ERtoRel(erm).display();
             } else if (action.equalsIgnoreCase("DISPLAY") || action.equalsIgnoreCase("D")) {
                 erm.display();
             } else if (!action.equalsIgnoreCase("EXIT") && !action.equalsIgnoreCase("QUIT")) {
@@ -145,7 +175,11 @@ public class ERMtoRM {
         System.err.print("Would you like to save this model for future use? ");
         action = scan.next();
         if (action.equalsIgnoreCase("YES") || action.equalsIgnoreCase("Y")) {
-            saveModel(erm);
+            try {
+                saveModel(erm);
+            } catch (IOException ex) {
+                Logger.getLogger(ERMtoRM.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }//if
         System.err.println("Now exiting system...");
     }//newModel

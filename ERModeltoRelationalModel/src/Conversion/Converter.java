@@ -293,27 +293,35 @@ public class Converter {
     
     public static void main(String args[]) {
         ERModel er = new ERModel("Company");
+        ArrayList<String> keys = new ArrayList<>();
         er.addRegEntity("Employee");
         er.addAttrToEntity("Employee", "Employee", "SSN", "S");
         er.addAttrToEntity("Employee", "Employee", "Address", "C");
         er.addAttrToEntity("Employee", "Address", "Street", "S");
         er.addAttrToEntity("Employee", "Address", "House#", "S");
-        er.setKeyAttrOfEnt("Employee", "SSN");
+        keys.add("SSN");
+        er.setKeyAttrOfEnt("Employee", keys);
         er.addRegEntity("ProductType");
         er.addAttrToEntity("ProductType", "ProductType", "Category", "M");
         er.addAttrToEntity("ProductType", "ProductType", "Type", "S");
-        er.setKeyAttrOfEnt("ProductType", "Type");
+        keys.clear();
+        keys.add("Type");
+        er.setKeyAttrOfEnt("ProductType", keys);
         er.addWeakEntity("Product", "HasType");
         er.addAttrToEntity("Product", "Product", "Name", "S");
         er.addAttrToEntity("Product", "Product", "AvailableCountries", "M");
-        er.setKeyAttrOfEnt("Product", "Name");
+        keys.clear();
+        keys.add("Name");
+        er.setKeyAttrOfEnt("Product", keys);
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "1", "N");
         er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
         er.addAttrToRelationship("Hours", "Simple", "WorksOn");
         er.addRelationship("Supervises", er.getEntity("Employee"), er.getEntity("Employee"), "Full", "Partial", "1", "N");
         er.addRegEntity("Department");
         er.addAttrToEntity("Department", "Department", "DeptNo", "S");
-        er.setKeyAttrOfEnt("Department", "DeptNo");
+        keys.clear();
+        keys.add("DeptNo");
+        er.setKeyAttrOfEnt("Department", keys);
         er.addRelationship("WorksFor", er.getEntity("Employee"), er.getEntity("Department"), "Full", "Full", "N", "1");
         er.addRelationship("Manages", er.getEntity("Employee"), er.getEntity("Department"), "Partial", "Full", "1", "1");
         
