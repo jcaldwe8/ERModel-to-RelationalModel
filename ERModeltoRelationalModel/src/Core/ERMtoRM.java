@@ -8,6 +8,7 @@ package Core;
 import Conversion.Converter;
 import EntityRelationship.ERModel;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -192,6 +193,70 @@ public class ERMtoRM {
         addToModel(erm);
     }//newModel
     
+    //readRegEntity: read a regular Entity from file
+    private static void readRegEntity(ERModel erm, LineNumberReader reader) throws IOException {
+        ArrayList<String> keys = new ArrayList<>();
+        String name;
+        String line = reader.readLine();
+        name = line;
+        erm.addRegEntity(name);
+        while (!(line = reader.readLine()).equals("A>")) {
+            //do nothing
+        }//while
+        while (!(line = reader.readLine()).equals("<A")) {
+            
+        }//while
+        while (!(line = reader.readLine()).equals("K>")) {
+            //do nothing
+        }//while
+        while (!(line = reader.readLine()).equals("<K")) {
+            keys.add(line);
+        }//while
+        erm.setKeyAttrOfEnt(name, keys);
+    }//readRegEntity
+    
+    //readWeakEntity: read a weak Entity from file
+    private static void readWeakEntity(ERModel erm, LineNumberReader reader) throws IOException {
+        ArrayList<String> keys = new ArrayList<>();
+        String name;
+        String line = reader.readLine();
+        name = line;
+        erm.addWeakEntity(name, reader.readLine());
+        while (!(line = reader.readLine()).equals("A>")) {
+            //do nothing
+        }//while
+        while (!(line = reader.readLine()).equals("<A")) {
+            
+        }//while
+        while (!(line = reader.readLine()).equals("K>")) {
+            //do nothing
+        }//while
+        while (!(line = reader.readLine()).equals("<K")) {
+            keys.add(line);
+        }//while
+        erm.setKeyAttrOfEnt(name, keys);
+    }//readWeakEntity
+    
+    //readRelationship: read a relationship from file
+    private static void readRelationship(ERModel erm, LineNumberReader reader) throws IOException {
+        String name, le, re, lp, rp, lc, rc;
+        String line = reader.readLine();
+        name = line;
+        le = reader.readLine();
+        lp = reader.readLine();
+        lc = reader.readLine();
+        re = reader.readLine();
+        rp = reader.readLine();
+        rc = reader.readLine();
+        erm.addRelationship(name, erm.getEntity(le), erm.getEntity(re), lp, rp, lc, rc);
+        while (!(line = reader.readLine()).equals("A>")) {
+            //do nothing
+        }//while
+        while (!(line = reader.readLine()).equals("<A")) {
+            
+        }//while
+    }//readRelationship
+    
     private static void loadModel() {
         Scanner scan = new Scanner(System.in);
         String filename;
@@ -201,7 +266,24 @@ public class ERMtoRM {
         LineNumberReader reader = null;
         
         try {
+            reader = new LineNumberReader(new FileReader(filename));
+            String line;
+            line = reader.readLine();
+            ERModel erm = new ERModel(line);
             
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("EOF")) {
+                    break;
+                } else if (line.equals("ER")) {
+                    readRegEntity(erm, reader);
+                } else if (line.equals("EW")) {
+                    readWeakEntity(erm, reader);
+                } else if (line.equals("R")) {
+                    readRelationship(erm, reader);
+                }//if-else
+            }//while
+            
+            addToModel(erm);
         } catch (Exception ex){
          ex.printStackTrace();
         } finally {
@@ -215,7 +297,6 @@ public class ERMtoRM {
             }//try-catch
         }//try-catch-finally
         
-        //addToModel(erm);
     }//loadModel
     
 }
