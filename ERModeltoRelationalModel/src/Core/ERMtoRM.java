@@ -193,18 +193,41 @@ public class ERMtoRM {
         addToModel(erm);
     }//newModel
     
+    //readAttribute: read an attribute from a line of input
+    private static void readAttribute(ERModel erm, String erName, String line, boolean entity) {
+        String attach, attrName, type;
+        String attr_type[] = line.split(":");
+        String attach_ary[] = attr_type[0].split(">");
+        type = attr_type[1];
+        if (attach_ary.length == 1) {
+            attrName = attach_ary[0];
+            attach = erName;
+        } else {
+            attrName = attach_ary[1];
+            attach = attach_ary[0];
+        }//if-else
+        if (entity) {
+            System.err.println("Adding Attribute " + attrName + " to Entity " + erName);
+            erm.addAttrToEntity(erName, attach, attrName, type);
+        } else {
+            System.err.println("Adding Attribute " + attrName + " to Relationship " + erName);
+            erm.addAttrToRelationship(attrName, type, erName);
+        }//if-else
+    }//readAttribute
+    
     //readRegEntity: read a regular Entity from file
     private static void readRegEntity(ERModel erm, LineNumberReader reader) throws IOException {
         ArrayList<String> keys = new ArrayList<>();
         String name;
         String line = reader.readLine();
         name = line;
+        System.err.println("Adding Entity " + name);
         erm.addRegEntity(name);
         while (!(line = reader.readLine()).equals("A>")) {
             //do nothing
         }//while
         while (!(line = reader.readLine()).equals("<A")) {
-            
+            readAttribute(erm, name, line, true);
         }//while
         while (!(line = reader.readLine()).equals("K>")) {
             //do nothing
@@ -221,12 +244,13 @@ public class ERMtoRM {
         String name;
         String line = reader.readLine();
         name = line;
+        System.err.println("Adding Entity " + name);
         erm.addWeakEntity(name, reader.readLine());
         while (!(line = reader.readLine()).equals("A>")) {
             //do nothing
         }//while
         while (!(line = reader.readLine()).equals("<A")) {
-            
+            readAttribute(erm, name, line, true);
         }//while
         while (!(line = reader.readLine()).equals("K>")) {
             //do nothing
@@ -248,12 +272,13 @@ public class ERMtoRM {
         re = reader.readLine();
         rp = reader.readLine();
         rc = reader.readLine();
+        System.err.println("Adding Relationship " + name);
         erm.addRelationship(name, erm.getEntity(le), erm.getEntity(re), lp, rp, lc, rc);
         while (!(line = reader.readLine()).equals("A>")) {
             //do nothing
         }//while
         while (!(line = reader.readLine()).equals("<A")) {
-            
+            readAttribute(erm, name, line, false);
         }//while
     }//readRelationship
     
@@ -283,6 +308,7 @@ public class ERMtoRM {
                 }//if-else
             }//while
             
+            System.err.println();
             addToModel(erm);
         } catch (Exception ex){
          ex.printStackTrace();

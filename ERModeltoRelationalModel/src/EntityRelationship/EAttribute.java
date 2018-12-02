@@ -202,6 +202,10 @@ public class EAttribute {
         food.getSubAttribute("Fruits").addCompAttr("Citrus", AttrType.SIMPLE);
         
         food.display();
+        
+        String test = "DeptNo:Simple";
+        System.err.println(test.split(":")[0] + " " + test.split(":")[1]);
+        System.err.println(test.split(">").length);
     }
     
 }

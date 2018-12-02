@@ -2,6 +2,16 @@ Company
 ER
 Employee
 A>
+SSN:S
 <A
 K>
+SSN
+<K
+ER
+Department
+A>
+DeptNo:S
+<A
+K>
+DeptNo
 <K
