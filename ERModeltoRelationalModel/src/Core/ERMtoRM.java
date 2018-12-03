@@ -50,9 +50,11 @@ public class ERMtoRM {
  
     private static void addEntity(ERModel erm) {
         Scanner scan = new Scanner(System.in);
-        String name, weak;
+        String name, weak, addAttr;
+        
         System.err.print("What is the name of the Entity ");
         name = scan.next();
+        
         System.err.print("Is it a weak Entity? ");
         weak = scan.next();
         if (weak.equalsIgnoreCase("YES") || weak.equalsIgnoreCase("Y")) {
@@ -63,11 +65,25 @@ public class ERMtoRM {
         } else {
             erm.addRegEntity(name);
         }//if-else
+        
+        System.err.print("Would you like to add an attribute to this Entity? ");
+        addAttr = scan.next();
+        while (addAttr.equalsIgnoreCase("YES") || addAttr.equalsIgnoreCase("Y")) {
+            addAttribute(erm, name, true);
+            System.err.print("Would you like to add another attribute to this Entity? ");
+            addAttr = scan.next();
+        }//while
+        
+        System.err.print("Would you like to set the primary key for this Entity? ");
+        addAttr = scan.next();
+        while (addAttr.equalsIgnoreCase("YES") || addAttr.equalsIgnoreCase("Y")) {
+            setKeyAttribute(erm, name);
+        }//while
     }//addEntity
     
     private static void addRelationship(ERModel erm) {
         Scanner scan = new Scanner(System.in);
-        String name, LE, RE, LP, RP, LC, RC;
+        String name, LE, RE, LP, RP, LC, RC, addAttr;
         System.err.print("What is the name of the Relationship? ");
         name = scan.next();
         System.err.print("What is the first entity involved? ");
@@ -83,39 +99,56 @@ public class ERMtoRM {
         System.err.print("What is the entity's cardinality(1,n,m,or min,max)? ");
         RC = scan.next();
         erm.addRelationship(name, erm.getEntity(LE), erm.getEntity(RE), LP, RP, LC, RC);
+        
+        System.err.print("Would you like to add an attribute to this Relationship? ");
+        addAttr = scan.next();
+        while (addAttr.equalsIgnoreCase("YES") || addAttr.equalsIgnoreCase("Y")) {
+            addAttribute(erm, name, false);
+            System.err.print("Would you like to add another attribute to this Relationship? ");
+            addAttr = scan.next();
+        }//while
     }//addRelationship
     
-    private static void addAttribute(ERModel erm) {
+    private static void addAttribute(ERModel erm, String erName, boolean isEnt) {
         Scanner scan = new Scanner(System.in);
-        String aName, EntOrRel, erName, attach, type;
+        String aName, attach, type;
         System.err.print("What is the name of the attribute? ");
         aName = scan.next();
         System.err.println("What is the type of the attribute?");
         System.err.print("Options: Simple(S), Composite(C), Multivalued(M), Derived(D) ");
         type = scan.next();
+        if (isEnt) {
+            System.err.println("What is the name of the item that the attribute is attached to? ");
+            System.err.print("(Give the name of the Entity or a Composite Attribute): ");
+            attach = scan.next();
+            erm.addAttrToEntity(erName, attach, aName, type);
+        } else {
+            erm.addAttrToRelationship(aName, type, erName);
+        }//if-else
+    }//addAttribute
+    
+    private static void addAttribute(ERModel erm) {
+        Scanner scan = new Scanner(System.in);
+        String EntOrRel, erName;
         System.err.print("Is this being added to an Entity(E) or Relationship(R)? ");
         EntOrRel = scan.next();
         if (EntOrRel.equalsIgnoreCase("ENTITY") || EntOrRel.equalsIgnoreCase("E")) {
             System.err.print("To which Entity are we adding an attribute? ");
             erName = scan.next();
-            System.err.println("What is the name of the item that the attribute is attached to? ");
-            System.err.print("(Give the name of the Entity or a Composite Attribute): ");
-            attach = scan.next();
-            erm.addAttrToEntity(erName, attach, aName, type);
+            addAttribute(erm, erName, true);
         } else if (EntOrRel.equalsIgnoreCase("RELATIONSHIP") || EntOrRel.equalsIgnoreCase("R")) {
             System.err.print("To which Relationship are we adding an attribute? ");
             erName = scan.next();
-            erm.addAttrToRelationship(aName, type, erName);
+            addAttribute(erm, erName, false);
         }//if-else 
         System.err.println();
     }//addAttribute
     
-    private static void setKeyAttribute(ERModel erm) {
+    private static void setKeyAttribute(ERModel erm, String entity) {
         Scanner scan = new Scanner(System.in);
-        String entity, attr;
+        String attr;
         ArrayList<String> keys = new ArrayList<>();
-        System.err.print("For which Entity are we setting the key attributes? ");
-        entity = scan.next();
+        
         System.err.println("Add the names of the attributes one by one");
         System.err.println("Enter - to finish");
         attr = scan.next();
@@ -124,6 +157,16 @@ public class ERMtoRM {
             attr = scan.next();
         }//do while
         erm.setKeyAttrOfEnt(entity, keys);
+    }//setKeyAttribute
+    
+    private static void setKeyAttribute(ERModel erm) {
+        Scanner scan = new Scanner(System.in);
+        String entity;
+
+        System.err.print("For which Entity are we setting the key attributes? ");
+        entity = scan.next();
+        
+        setKeyAttribute(erm, entity);
     }//setKeyAttribute
     
     //saveModel: save current model information to file
