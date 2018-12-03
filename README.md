@@ -2,9 +2,9 @@
 A tool to transform ER diagram components into a Relational Schema
 
 
-### How do I get set up? ###
+## How do I get set up? ##
 
-## Building the project ##
+### Building the project ###
 
 From the current directory (you should be able to see ERModeltoRelationalModel/),
 use the following commands:
@@ -20,7 +20,7 @@ To run the executable, use
 
 There are no options for the program, so the above command will run the program exactly.
 
-## How to use the program ##
+### How to use the program ###
 
 After entering the previous command, a prompt will ask if you want to start a new model or load a file.
 Select N or n to begin a new model and enter the name of the model when prompted.
@@ -47,7 +47,7 @@ Now, the program give several options:
     + When quitting, you will be prompted to save the model
     + If you decide to save the model, it will be stored in the ./test directory
   
-## How to run tests ##
+### How to run tests ###
 
 Provided in the test directory are the following files for testing:
 
@@ -55,6 +55,6 @@ Provided in the test directory are the following files for testing:
   
 To use these files, enter F or f when the first prompt appears and enter the appropriate file name.
 
-### Who do I talk to? ###
+## Who do I talk to? ##
 
 * Jordan Caldwell at University of Rochester - jcaldwe8
