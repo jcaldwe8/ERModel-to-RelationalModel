@@ -76,7 +76,7 @@ public class ERMtoRM {
         
         System.err.print("Would you like to set the primary key for this Entity? ");
         addAttr = scan.next();
-        while (addAttr.equalsIgnoreCase("YES") || addAttr.equalsIgnoreCase("Y")) {
+        if (addAttr.equalsIgnoreCase("YES") || addAttr.equalsIgnoreCase("Y")) {
             setKeyAttribute(erm, name);
         }//while
     }//addEntity
