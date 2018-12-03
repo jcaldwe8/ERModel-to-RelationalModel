@@ -57,4 +57,6 @@ To use these files, enter F or f when the first prompt appears and enter the app
 
 ## Who do I talk to? ##
 
-* Jordan Caldwell at University of Rochester - jcaldwe8
+* Jordan Caldwell at University of Rochester
+    + NetId: jcaldwe8
+    + Email: jcaldwe8@ur.rochester.edu
