@@ -173,7 +173,7 @@ public class ERMtoRM {
     private static void saveModel(ERModel erm) throws IOException {
         String filename = erm.getName() + ".dat";
         System.err.println("Saving Entity-Relationship model to filename " + filename);
-        FileWriter model = new FileWriter(filename);
+        FileWriter model = new FileWriter("./test/" + filename);
         
         model.write(erm.toFile());
         
@@ -334,7 +334,8 @@ public class ERMtoRM {
         LineNumberReader reader = null;
         
         try {
-            reader = new LineNumberReader(new FileReader(filename));
+            reader = new LineNumberReader(new FileReader("./test/" + filename));
+            System.err.println("Loading ./test/" + filename + "...");
             String line;
             line = reader.readLine();
             ERModel erm = new ERModel(line);
@@ -351,6 +352,7 @@ public class ERMtoRM {
                 }//if-else
             }//while
             
+            System.err.println("Loaded ./test/" + filename);
             System.err.println();
             addToModel(erm);
         } catch (Exception ex){
