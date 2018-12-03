@@ -33,17 +33,17 @@ Now, the program give several options:
     Display(D)
     Exit\Quit
 
-  1. When adding an Entity, you will be prompted for a name and to decide if it is a weak Entity.
+  * When adding an Entity, you will be prompted for a name and to decide if it is a weak Entity.
     + You are also given the option to add attributes and set the primary key.
-  2. When adding a Relationship, you will be prompted for a name and information for both Entities involved.
+  * When adding a Relationship, you will be prompted for a name and information for both Entities involved.
     + The Entities need to be added BEFORE a relationship is established between them!
     + Information includes: Name, participation, and cardinality.
     + Attributes can be added in this step as well.
-  3. Attributes can be added to any previously added Entities or Relationships.
-  4. The Primary Key for an Entity can be changed at any time.
-  5. The current model can be converted into a Relational model at any time.
-  6. To display the current Entity-Relationship model, the display option is available.
-  7. Use exit or quit to stop the program (e or q are not viable options).
+  * Attributes can be added to any previously added Entities or Relationships.
+  * The Primary Key for an Entity can be changed at any time.
+  * The current model can be converted into a Relational model at any time.
+  * To display the current Entity-Relationship model, the display option is available.
+  * Use exit or quit to stop the program (e or q are not viable options).
     + When quitting, you will be prompted to save the model
     + If you decide to save the model, it will be stored in the ./test directory
   
