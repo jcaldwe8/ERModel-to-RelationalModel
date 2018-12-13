@@ -38,7 +38,7 @@ public class RelModel {
                 return r; //if the relation name has not been changed
             } else if (r.getName().contains(name) && r.getName().contains("(merged)_")) {
                 return r; //if the relation was merged during conversion from ER
-            }//if-else
+            } //if-else
         return new Relation("NULL");
     }//getRelation
     

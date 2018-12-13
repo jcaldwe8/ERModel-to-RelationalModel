@@ -53,36 +53,19 @@ public class Entity {
     // type: type of the added attribute
     public void addAttr(String attach, String aName, AttrType type) {
         if (attach.equals(name)) {
-            addAttrToEnt(aName, type);
+            attr.add(new EAttribute(aName, type, 0));
         } else {
-            addAttrToComp(attach, aName, type);
+            EAttribute b;
+            for (EAttribute a : attr) {
+                b = a.getSubAttribute(attach);
+                if (b != null && b.isComposite()) {
+                    b.addCompAttr(aName, type);
+                }//it
+            }//for
         }//if-else
         if (type == AttrType.MULTIVALUED)
             newMVA = true; //added a new multivalued attribute
     }//addAttr
-    
-    //addAttrToEnt: add an attribute to this Entity
-    private void addAttrToEnt(String name, AttrType type) {
-        EAttribute a = new EAttribute(name, type, 0);
-        attr.add(a);
-    }//addAttrToEnt
-    
-    //addAttrToComp: add a sub-attribute to a composite attribute
-    private void addAttrToComp(String parAttr, String aName, AttrType ctype) {
-        for (EAttribute a : attr) {
-            if (a.getName().equals(parAttr) && a.getType() == AttrType.COMPOSITE) {
-                a.addCompAttr(aName, ctype);
-                return;
-            } else if (a.getType() == AttrType.COMPOSITE) {
-                EAttribute b;
-                b = a.getSubAttribute(parAttr);
-                if (b.getName().equals(parAttr)) { 
-                    b.addCompAttr(aName, ctype);
-                    return;
-                }
-            }//if
-        }//for
-    }//addAttrToComp
 
     //setKeyAttr: set the key attributes of this entity type
     public void setKeyAttr(ArrayList<String> keys) {

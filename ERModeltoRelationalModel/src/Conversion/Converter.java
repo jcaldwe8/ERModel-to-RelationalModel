@@ -211,7 +211,7 @@ public class Converter {
     // these become the primary key of the relation
     // any attributes specific to the relationship are added to the relation
     private static void crossReferenceApproach(Relationship r, RelModel rm) {
-        ArrayList<String> keys = new ArrayList<>();
+        ArrayList<String> keys;
         rm.addRelation(r.getName()); //define a new relation
         //add the primary keys of each entity to the new relation
         keys = addPKasFK(r.getName(), rm.getRelation(r.getLeftEnt().getName()), rm);
@@ -315,7 +315,7 @@ public class Converter {
         er.setKeyAttrOfEnt("Product", keys);
         er.addRelationship("HasType", er.getEntity("ProductType"), er.getEntity("Product"), "Partial", "Full", "1", "N");
         er.addRelationship("WorksOn", er.getEntity("Employee"), er.getEntity("Product"), "Full", "Partial", "N", "M");
-        er.addAttrToRelationship("Hours", "Simple", "WorksOn");
+        er.addAttrToRelationship("WorksOn", "WorksOn", "Hours", "Simple");
         er.addRelationship("Supervises", er.getEntity("Employee"), er.getEntity("Employee"), "Full", "Partial", "1", "N");
         er.addRegEntity("Department");
         er.addAttrToEntity("Department", "Department", "DeptNo", "S");

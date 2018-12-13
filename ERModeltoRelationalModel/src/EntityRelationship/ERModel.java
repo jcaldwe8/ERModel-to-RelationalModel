@@ -60,10 +60,21 @@ public class ERModel {
     
     //TODO: improve to allow composite functionality
     //addAttrToRelationship: add an attribute to a relationship
-    public void addAttrToRelationship(String attr, String type, String relName) {
+    public void addAttrToRelationship(String relName, String attach, String aName, String type) {
         Relationship r = getRelationship(relName);
         if (!r.getName().equals("NULL")) {
-            r.addAttribute(attr, type);
+            if (type.equalsIgnoreCase("COMPOSITE") || type.equalsIgnoreCase("C")) {
+                r.addAttribute(attach, aName, AttrType.COMPOSITE);
+            } else if (type.equalsIgnoreCase("SIMPLE") || type.equalsIgnoreCase("S")) {
+                r.addAttribute(attach, aName, AttrType.SIMPLE);
+            } else if (type.equalsIgnoreCase("MULTIVALUED") || type.equalsIgnoreCase("M")) {
+                r.addAttribute(attach, aName, AttrType.MULTIVALUED);
+            } else if (type.equalsIgnoreCase("DERIVED") || type.equalsIgnoreCase("D")) {
+                r.addAttribute(attach, aName, AttrType.DERIVED);
+            } else {
+                System.err.println("Attribute Type " + type + " is not acceptable.");
+                System.err.println("Choose COMPOSITE, SIMPLE, MULTIVALUED, or DERIVED.");
+            }//if-else
         } else {
             System.out.println("Couldn't find Relationship with name " + relName + "\nAttribute not added");
         }
@@ -75,18 +86,21 @@ public class ERModel {
     // aName: name of added attribute
     // type: type of added attribute
     public void addAttrToEntity(String eName, String attach, String aName, String type) {
-        if (type.equalsIgnoreCase("COMPOSITE") || type.equalsIgnoreCase("C")) {
-            getEntity(eName).addAttr(attach, aName, AttrType.COMPOSITE);
-        } else if (type.equalsIgnoreCase("SIMPLE") || type.equalsIgnoreCase("S")) {
-            getEntity(eName).addAttr(attach, aName, AttrType.SIMPLE);
-        } else if (type.equalsIgnoreCase("MULTIVALUED") || type.equalsIgnoreCase("M")) {
-            getEntity(eName).addAttr(attach, aName, AttrType.MULTIVALUED);
-        } else if (type.equalsIgnoreCase("DERIVED") || type.equalsIgnoreCase("D")) {
-            getEntity(eName).addAttr(attach, aName, AttrType.DERIVED);
-        } else {
-            System.err.println("Attribute Type " + type + " is not acceptable.");
-            System.err.println("Choose COMPOSITE, SIMPLE, MULTIVALUED, or DERIVED.");
-        }//if-else
+        Entity e = this.getEntity(eName);
+        if (!e.getName().equals("NULL")) {
+            if (type.equalsIgnoreCase("COMPOSITE") || type.equalsIgnoreCase("C")) {
+                e.addAttr(attach, aName, AttrType.COMPOSITE);
+            } else if (type.equalsIgnoreCase("SIMPLE") || type.equalsIgnoreCase("S")) {
+                e.addAttr(attach, aName, AttrType.SIMPLE);
+            } else if (type.equalsIgnoreCase("MULTIVALUED") || type.equalsIgnoreCase("M")) {
+                e.addAttr(attach, aName, AttrType.MULTIVALUED);
+            } else if (type.equalsIgnoreCase("DERIVED") || type.equalsIgnoreCase("D")) {
+                e.addAttr(attach, aName, AttrType.DERIVED);
+            } else {
+                System.err.println("Attribute Type " + type + " is not acceptable.");
+                System.err.println("Choose COMPOSITE, SIMPLE, MULTIVALUED, or DERIVED.");
+            }//if-else
+        }//if
     }//addAttrToEntity
     
     //setKeyAttrOfEnt: set the key attributes of an entity type

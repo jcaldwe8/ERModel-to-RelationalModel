@@ -123,7 +123,10 @@ public class ERMtoRM {
             attach = scan.next();
             erm.addAttrToEntity(erName, attach, aName, type);
         } else {
-            erm.addAttrToRelationship(aName, type, erName);
+            System.err.println("What is the name of the item that the attribute is attached to? ");
+            System.err.print("(Give the name of the Relationship or a Composite Attribute): ");
+            attach = scan.next();
+            erm.addAttrToRelationship(erName, attach, aName, type);
         }//if-else
     }//addAttribute
     
@@ -173,7 +176,7 @@ public class ERMtoRM {
     private static void saveModel(ERModel erm) throws IOException {
         String filename = erm.getName() + ".dat";
         System.err.println("Saving Entity-Relationship model to filename " + filename);
-        FileWriter model = new FileWriter("./test/" + filename);
+        FileWriter model = new FileWriter("./models/" + filename);
         
         model.write(erm.toFile());
         
@@ -254,7 +257,7 @@ public class ERMtoRM {
             erm.addAttrToEntity(erName, attach, attrName, type);
         } else {
             System.err.println("Adding Attribute " + attrName + " to Relationship " + erName);
-            erm.addAttrToRelationship(attrName, type, erName);
+            erm.addAttrToRelationship(erName, attach, attrName, type);
         }//if-else
     }//readAttribute
     
@@ -334,7 +337,7 @@ public class ERMtoRM {
         LineNumberReader reader = null;
         
         try {
-            reader = new LineNumberReader(new FileReader("./test/" + filename));
+            reader = new LineNumberReader(new FileReader("./models/" + filename));
             System.err.println("Loading ./test/" + filename + "...");
             String line;
             line = reader.readLine();
