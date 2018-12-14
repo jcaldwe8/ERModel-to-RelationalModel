@@ -80,6 +80,7 @@ public class Converter {
         Entity par;
         String eName = e.getName();
         String parName;
+        String newName = r.getName() + "_";
         if (r.getLeftEnt().getName().equals(e.getName())) {
             par = r.getRightEnt();
         } else {
@@ -87,13 +88,13 @@ public class Converter {
         }//if-else
         for (String a : par.getKey()) {
             if (par.getAttr(a).isSimple()) {
-                rm.addAttr(eName, a, par.getName(), a);
-                parKeys.add(a);
+                rm.addAttr(eName, newName + a, par.getName(), a);
+                parKeys.add(newName + a);
             } else if (par.getAttr(a).isComposite()) {
                 parName = par.getName();
                 for (EAttribute comp : getSimpleComponents(par.getAttr(a))) {
-                    rm.addAttr(eName, comp.getName(), parName, comp.getName());
-                    parKeys.add(comp.getName());
+                    rm.addAttr(eName, newName + comp.getName(), parName, comp.getName());
+                    parKeys.add(newName + comp.getName());
                 }//for-each
             }//if-else
         }//for-each
@@ -113,12 +114,9 @@ public class Converter {
     //includePKasFK: include the PK of partial in full as a FK
     // also include any attributes specific to the relationship
     private static void includePKasFK(String full, String partial, Relationship r, RelModel rm) {
+        String newName = r.getName() + "_";
         for (String key : rm.getRelation(partial).getKey()) {
-            if (full.equals(partial)) {
-                rm.getRelation(full).addAttr(key + "_" + r.getName(), partial, key);
-            } else {
-                rm.getRelation(full).addAttr(key, partial, key);
-            }//if-else
+            rm.getRelation(full).addAttr(newName + key, partial, key);
         }//for-each
         for (EAttribute ea : r.getAttr()) {
             rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
@@ -195,10 +193,11 @@ public class Converter {
     // newR: name of new relation
     // ref: reference relation
     // rm: relational model
-    private static ArrayList<String> addPKasFK(String newR, Relation ref, RelModel rm) {
-        ArrayList<String> keys = new ArrayList<>(ref.getKey());
-        for (String ra : keys) {
-            rm.addAttr(newR, ra, ref.getName(), ra);
+    private static ArrayList<String> addPKasFK(String newR, Relation ref, RelModel rm, String addon) {
+        ArrayList<String> keys = new ArrayList<>();
+        for (String ra : ref.getKey()) {
+            rm.addAttr(newR, newR + addon + "_" + ra, ref.getName(), ra);
+            keys.add(newR + addon + "_" + ra);
         }//for-each
         return keys;
     }//addPKasFK
@@ -214,11 +213,21 @@ public class Converter {
         ArrayList<String> keys;
         rm.addRelation(r.getName()); //define a new relation
         //add the primary keys of each entity to the new relation
-        keys = addPKasFK(r.getName(), rm.getRelation(r.getLeftEnt().getName()), rm);
-        keys.addAll(addPKasFK(r.getName(), rm.getRelation(r.getRightEnt().getName()), rm));
+        String rName = r.getName();
+        Relation LER = rm.getRelation(r.getLeftEnt().getName()); //left entity relation
+        Relation RER = rm.getRelation(r.getRightEnt().getName()); // right entity relation
+        String lAddon = "("+r.getLeftCar().toString()+")";
+        String rAddon = "("+r.getRightCar().toString()+")";
+        if (r.getLeftEnt().equals(r.getRightEnt())) {
+            keys = addPKasFK(rName, LER, rm, lAddon);
+            keys.addAll(addPKasFK(rName, RER, rm, rAddon));
+        } else {
+            keys = addPKasFK(rName, LER, rm, "");
+            keys.addAll(addPKasFK(rName, RER, rm, ""));
+        }//if-else
         rm.getRelation(r.getName()).setKeyAttr(keys); //set the primary key
         for (EAttribute ea : r.getAttr()) {
-            rm.addAttr(r.getName(), ea.getName()); //add attributes specific to the relationship
+            rm.addAttr(rName, ea.getName()); //add attributes specific to the relationship
         }//for-each
     }//crossReferenceApproach
     
@@ -283,7 +292,7 @@ public class Converter {
         for (MultivaluedAttrTuple mvat : erm.getMVAT()) {
             for (EAttribute e : mvat.getMva()) {
                 rm.addRelation(e.getName());
-                keys = addPKasFK(e.getName(), rm.getRelation(mvat.getEntName()), rm);
+                keys = addPKasFK(e.getName(), rm.getRelation(mvat.getEntName()), rm, "");
                 rm.addAttr(e.getName(), e.getName() + "(attr)");
                 keys.add(e.getName() + "(attr)");
                 rm.getRelation(e.getName()).setKeyAttr(keys);
