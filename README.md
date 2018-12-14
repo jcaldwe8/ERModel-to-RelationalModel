@@ -45,16 +45,108 @@ Now, the program give several options:
   * To display the current Entity-Relationship model, the display option is available.
   * Use exit or quit to stop the program (e or q are not viable options).
     + When quitting, you will be prompted to save the model
-    + If you decide to save the model, it will be stored in the ./test directory
+    + If you decide to save the model, it will be stored in the ./model directory as a .dat file
   
-### How to run tests ###
+### Available Models ###
 
-Provided in the test directory are the following files for testing:
+Provided in the model directory are the following files for testing the code with full models:
 
-  + Company.dat
+  + Company.dat - a model of a company with employees, departments, and projects
+  + Ship_Tracking.dat - a model of tracking ships with ports, ship types, and locations
   
 To use these files, enter F or f when the first prompt appears and enter the appropriate file name.
 
+### Making a New Model in a File ###
+
+Start in the ./model directory.
+To make a model with a file, give it the name you want (generally, the name of the model is used).
+The extension can be any text file.
+When the model is saved with the program, it will be saved as a .dat file.
+In general, enter entities before relationships.
+Doing this will ensure that the program works properly.
+Here is the format for regular entities, weak entities, and relationships:
+
+Regular Entity:
+* Start with ER
+* Add the name of the entity
+* Add "A>"
+* Enter all attributes with the format
+    + If it is not apart of a composite attribute, {attribute name}:{type}
+    + If it is apart of a composite attribute, {composite parent}>{attribute name}:{type}
+* Add "<A"
+* Add "K>"
+* Enter the attributes that make up the key, each on a separate line
+* Add "<K"
+
+        ER
+        Department
+        A>
+        Number:SIMPLE
+        Name:SIMPLE
+        Location:MULTIVALUED
+        Number_of_employees:DERIVED
+        <A
+        K>
+        Number
+        Name
+        <K
+
+Weak Entity:
+* Start with EW
+* Add the name of the entity
+* Add the name of the identifying relationship
+* Add "A>"
+* Enter all attributes with the format
+    + If it is not apart of a composite attribute, {attribute name}:{type}
+    + If it is apart of a composite attribute, {composite parent}>{attribute name}:{type}
+* Add "<A"
+* Add "K>"
+* Enter the attributes that make up the key, each on a separate line
+* Add "<K"
+    
+        EW
+        Dependent
+        Dependents_Of
+        A>
+        Name:SIMPLE
+        Sex:SIMPLE
+        Birth_date:SIMPLE
+        Relationship:SIMPLE
+        <A
+        K>
+        Name
+        <K
+        
+Relationship:
+* Start with R
+* Add the name of the relaionship
+* Add the first entity
+* Add the entity's participation
+* Add the entity's cardinality
+* Add the second entity
+* Add the entity's participation
+* Add the entity's cardinality
+* Add "A>"
+* Enter all attributes with the format
+    + If it is not apart of a composite attribute, {attribute name}:{type}
+    + If it is apart of a composite attribute, {composite parent}>{attribute name}:{type}
+* Add "<A"
+
+        R
+        Works_On
+        Employee
+        FULL
+        M
+        Project
+        FULL
+        N
+        A>
+        Hours:SIMPLE
+        <A
+
+At the end of the file, enter "EOF".
+For reference, look at either Company.dat or Ship_Tracking.dat in the ./model directory.
+    
 ## Who do I talk to? ##
 
 * Jordan Caldwell at University of Rochester
