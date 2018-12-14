@@ -338,7 +338,7 @@ public class ERMtoRM {
         
         try {
             reader = new LineNumberReader(new FileReader("./models/" + filename));
-            System.err.println("Loading ./test/" + filename + "...");
+            System.err.println("Loading ./model/" + filename + "...");
             String line;
             line = reader.readLine();
             ERModel erm = new ERModel(line);
@@ -355,7 +355,7 @@ public class ERMtoRM {
                 }//if-else
             }//while
             
-            System.err.println("Loaded ./test/" + filename);
+            System.err.println("Loaded ./model/" + filename);
             System.err.println();
             addToModel(erm);
         } catch (Exception ex){
